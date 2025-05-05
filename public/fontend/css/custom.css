@@ -1,0 +1,45 @@
+.panel h4,
+.panel p,
+.panel label,
+.panel button {
+    font-weight: 300 !important;
+}
+
+.btn-default {
+    background: #FE980F !important;
+    color: white !important;
+    /* Màu chữ trắng */
+    border: none !important;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 5px;
+    /* Hiệu ứng mượt */
+}
+
+.btn-default:hover {
+    background-color: #ccc !important;
+    /* Màu cam đậm hơn khi hover */
+}
+
+.input-group {
+    border-top: 1px solid #ccc;
+}
+
+.panel {
+    position: relative;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.panel h4 {
+    position: absolute;
+    top: -22px;
+    /* Đưa tiêu đề lên trên viền */
+    left: 15px;
+    background: white;
+    /* Màu nền giúp chữ không bị che */
+    padding: 0 10px;
+    font-size: 16px;
+    font-weight: 600;
+}
