@@ -60,8 +60,29 @@
                                             <form>
                                             @csrf
                                                 <a id="wishlish_productUrl{{$product->product_id}}" href="{{ URL::to('chi-tiet-san-pham/'.$product->product_slug) }}">
-                                                    <img id="wishlish_productImage{{$product->product_id}}" src="{{ URL::to('public/upload/product/'.$product->product_image) }}" alt="" style="height: 200px; object-fit: cover;" />
-                                                    <h2>{{ number_format($product->product_price, 0, ',', '.') . ' VNĐ' }}</h2>
+                                                    <div style="position: relative;">
+                                                        <img id="wishlish_productImage{{$product->product_id}}" src="{{ URL::to('public/upload/product/' . $product->product_image) }}" alt="" style="height: 200px; object-fit: cover; width: 100%;" />
+
+                                                        @if (!empty($product->product_discount_price))
+                                                            <span style="position: absolute; top: 10px; left: 10px; background-color: red; color: white; padding: 3px 8px; font-size: 12px; border-radius: 4px;">
+                                                                Giảm giá
+                                                            </span>
+                                                        @endif
+                                                    </div>
+                                                    @if (!empty($product->product_discount_price))
+                                                        <h2 style="font-size: 18px; display: flex; flex-wrap: wrap; align-items: center;">
+                                                            <span style="text-decoration: line-through; color: #999; font-size: 16px; margin-right: 10px;">
+                                                                {{ number_format($product->product_price, 0, ',', '.') }} VNĐ
+                                                            </span>
+                                                            <span style="color: #fe980f; font-size: 18px;">
+                                                                {{ number_format($product->product_discount_price, 0, ',', '.') }} VNĐ
+                                                            </span>
+                                                        </h2>
+                                                    @else
+                                                        <h2 style="color: #fe980f; font-size: 18px;">
+                                                            {{ number_format($product->product_price, 0, ',', '.') }} VNĐ
+                                                        </h2>
+                                                    @endif
                                                     <p>{{ $product->product_name }}</p>
                                                 </a>
                                                 <input type="hidden" class="cart_product_id_{{ $product->product_id }}" value="{{ $product->product_id }}">
@@ -280,126 +301,5 @@
       </div>
     </div>
   </div>
-<div class="category-tab"><!--category-tab-->
-						<div class="col-sm-12">
-							<ul class="nav nav-tabs">
-								<li class="active"><a href="#tshirt" data-toggle="tab">T-Shirt</a></li>
-								<li><a href="#blazers" data-toggle="tab">Blazers</a></li>
 
-							</ul>
-						</div>
-						<div class="tab-content">
-							<div class="tab-pane fade active in" id="tshirt" >
-								<div class="col-sm-3">
-									<div class="product-image-wrapper">
-										<div class="single-products">
-											<div class="productinfo text-center">
-												<img src="{{('public/fontend/images/gallery1.jpg')}}" alt="" />
-												<h2>$56</h2>
-												<p>Easy Polo Black Edition</p>
-												<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-</div><!--/category-tab-->
-
-<div class="recommended_items"><!--recommended_items-->
-						<h2 class="title text-center">recommended items</h2>
-
-						<div id="recommended-item-carousel" class="carousel slide" data-ride="carousel">
-							<div class="carousel-inner">
-								<div class="item active">
-									<div class="col-sm-4">
-										<div class="product-image-wrapper">
-											<div class="single-products">
-												<div class="productinfo text-center">
-													<img src="{{('public/fontend/images/recommend1.jpg')}}" alt="" />
-													<h2>$56</h2>
-													<p>Easy Polo Black Edition</p>
-													<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-												</div>
-
-											</div>
-										</div>
-									</div>
-									<div class="col-sm-4">
-										<div class="product-image-wrapper">
-											<div class="single-products">
-												<div class="productinfo text-center">
-													<img src="images/home/recommend2.jpg" alt="" />
-													<h2>$56</h2>
-													<p>Easy Polo Black Edition</p>
-													<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-												</div>
-
-											</div>
-										</div>
-									</div>
-									<div class="col-sm-4">
-										<div class="product-image-wrapper">
-											<div class="single-products">
-												<div class="productinfo text-center">
-													<img src="images/home/recommend3.jpg" alt="" />
-													<h2>$56</h2>
-													<p>Easy Polo Black Edition</p>
-													<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-												</div>
-
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="item">
-									<div class="col-sm-4">
-										<div class="product-image-wrapper">
-											<div class="single-products">
-												<div class="productinfo text-center">
-													<img src="images/home/recommend1.jpg" alt="" />
-													<h2>$56</h2>
-													<p>Easy Polo Black Edition</p>
-													<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-												</div>
-
-											</div>
-										</div>
-									</div>
-									<div class="col-sm-4">
-										<div class="product-image-wrapper">
-											<div class="single-products">
-												<div class="productinfo text-center">
-													<img src="images/home/recommend2.jpg" alt="" />
-													<h2>$56</h2>
-													<p>Easy Polo Black Edition</p>
-													<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-												</div>
-
-											</div>
-										</div>
-									</div>
-									<div class="col-sm-4">
-										<div class="product-image-wrapper">
-											<div class="single-products">
-												<div class="productinfo text-center">
-													<img src="images/home/recommend3.jpg" alt="" />
-													<h2>$56</h2>
-													<p>Easy Polo Black Edition</p>
-													<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-												</div>
-
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							 <a class="left recommended-item-control" href="#recommended-item-carousel" data-slide="prev">
-								<i class="fa fa-angle-left"></i>
-							  </a>
-							  <a class="right recommended-item-control" href="#recommended-item-carousel" data-slide="next">
-								<i class="fa fa-angle-right"></i>
-							  </a>
-						</div>
-</div><!--/recommended_items-->
 @endsection

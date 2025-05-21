@@ -115,7 +115,7 @@ class brandProductController extends Controller
                         ->join('tbl_brand_product', 'tbl_brand_product.brand_id', '=', 'tbl_product.brand_id')
                         ->where('tbl_brand_product.brand_slug',$brand_slug)
                         ->orderby('product_price', 'desc')
-                        ->paginate(6)
+                        ->paginate(10)
                         ->appends(request()->query());
 
             }else if($sort_by == 'tang_dan'){
@@ -123,7 +123,7 @@ class brandProductController extends Controller
                         ->join('tbl_brand_product', 'tbl_brand_product.brand_id', '=', 'tbl_product.brand_id')
                         ->where('tbl_brand_product.brand_slug',$brand_slug)
                         ->orderby('product_price', 'asc')
-                        ->paginate(6)
+                        ->paginate(10)
                         ->appends(request()->query());
 
             }else if($sort_by == 'kytu_az'){
@@ -131,7 +131,7 @@ class brandProductController extends Controller
                         ->join('tbl_brand_product', 'tbl_brand_product.brand_id', '=', 'tbl_product.brand_id')
                         ->where('tbl_brand_product.brand_slug',$brand_slug)
                         ->orderby('product_name', 'asc')
-                        ->paginate(6)
+                        ->paginate(10)
                         ->appends(request()->query());
 
             }else if($sort_by == 'kytu_za'){
@@ -139,7 +139,7 @@ class brandProductController extends Controller
                         ->join('tbl_brand_product', 'tbl_brand_product.brand_id', '=', 'tbl_product.brand_id')
                         ->where('tbl_brand_product.brand_slug',$brand_slug)
                         ->orderby('product_name', 'desc')
-                        ->paginate(6)
+                        ->paginate(10)
                         ->appends(request()->query());
                                                         //    ->appends(request()->query());
             }
@@ -151,14 +151,14 @@ class brandProductController extends Controller
                         ->join('tbl_brand_product', 'tbl_brand_product.brand_id', '=', 'tbl_product.brand_id')
                         ->whereBetween('tbl_product.product_price', [$min_price, $max_price])
                         ->orderBy('tbl_product.product_id', 'asc')
-                        ->paginate(6)
+                        ->paginate(10)
                         ->appends(request()->query());
 
         }else{
             $brand_by_id = DB::table('tbl_product')
                         ->join('tbl_brand_product', 'tbl_brand_product.brand_id', '=', 'tbl_product.brand_id')
                         ->where('tbl_brand_product.brand_slug',$brand_slug)
-                        ->paginate(6);
+                        ->paginate(10);
 
         }
 

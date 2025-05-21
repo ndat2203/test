@@ -273,6 +273,7 @@
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
 								<li><a href="{{URL::to('/trang-chu')}}" class="active">Trang chủ</a></li>
+                                <li><a href="{{URL::to('/trang-chu')}}" >Giới thiệu</a></li>
 								<!-- <li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu">
                                         <li><a href="shop.html">Products</a></li>
@@ -339,12 +340,12 @@
 
 	<section id="cart_items">
 		<div class="container" style="margin-bottom: 50px;">
-			<div class="breadcrumbs">
-				<ol class="breadcrumb" style="margin-bottom:30px;">
-				  <li><a  href="{{URL::to('/trang-chu')}}">Trang chủ</a></li>
-				  <li class="active">Lịch sử đơn hàng</li>
-				</ol>
-			</div><!--/breadcrums-->
+			<nav aria-label="breadcrumb">
+                <ol class="breadcrumb" style="background:none;">
+                    <li class="breadcrumb-item"><a href="{{url('/')}}">Trang chủ</a></li>
+                    <li class="breadcrumb-item active" style="border:none;" aria-current="page">Lịch sử đơn hàng</li>
+                </ol>
+            </nav>
 
             <div class="order-history" style="padding: 20px;">
                 <h3 style="margin-bottom: 20px; font-weight: bold;">Lịch sử đơn hàng</h3>
@@ -360,6 +361,17 @@
                        style="color: {{ $order->order_status == 'Đã giao' ? 'green' : 'orange' }}">{{ $order->order_status }}</span>
                </div>
                <div style="margin: 10px 0;"><strong>Phương thức thanh toán:</strong> {{ $order->payment->payment_method ?? 'Không xác định' }}</div>
+                @php
+                    $status = trim($order->payment->payment_status ?? '');
+                    $isPaid = $status === 'Đã thanh toán';
+                @endphp
+
+                <div style="margin: 10px 0;">
+                    <strong>Trạng thái thanh toán:</strong>
+                    <span style="color: {{ $isPaid ? '#27ae60' : '#e74c3c' }}; font-weight: bold;">
+                        {{ $status }}
+                    </span>
+                </div>
                <div style="margin-bottom: 10px;"><strong>Tổng tiền:</strong> {{ number_format($order->order_total, 0, ',', '.') }} VNĐ</div>
                <div style="display: flex; justify-content: space-between;">
                     <a href="{{ url('/history-order-detail/' . $order->order_code) }}" style="text-decoration: none; color: #007bff; flex-grow: 1; text-align: center; padding: 8px 0; border-radius: 4px; background-color: #f1f1f1; transition: background-color 0.3s, transform 0.3s; display: block; box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);">
@@ -629,7 +641,7 @@
     }
 </script>
 
-// JavaScript để hover xổ menu tai khoan
+<!-- JavaScript để hover xổ menu tai khoan -->
 <script>
    document.querySelectorAll('li[style]').forEach(function(item) {
      item.addEventListener('mouseenter', function() {

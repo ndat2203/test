@@ -320,14 +320,13 @@
 
 <section id="cart_items">
 	<div class="container">
-                <div class="breadcrumbs">
-                    <ol class="breadcrumb">
-                    <li><a href="{{URL::to('/trang-chu')}}">Trang chủ</a></li>
-                    <li class="active">Thanh toán giỏ hàng</li>
-                    </ol>
-                </div><!--/breadcrums-->
-
-
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb" style="background:none;">
+                <li class="breadcrumb-item"><a href="{{url('/')}}">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="{{url('/show-cart')}}">Giỏ hàng</a></li>
+                <li class="breadcrumb-item active" style="border:none;" aria-current="page">Điền thông tin giao hàng</li>
+            </ol>
+        </nav>
 
 		<div class="shopper-informations">
             <div class="row"  style="margin-bottom:100px;">
@@ -576,7 +575,7 @@
     <script src="{{asset('public/fontend/js/main.js')}}"></script>
 </body>
 </html>
-// JavaScript để hover xổ menu tai khoan
+<!-- JavaScript để hover xổ menu tai khoan -->
 <script>
    document.querySelectorAll('li[style]').forEach(function(item) {
      item.addEventListener('mouseenter', function() {

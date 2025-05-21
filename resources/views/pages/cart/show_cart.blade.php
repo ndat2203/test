@@ -82,40 +82,136 @@
             color: white;
         }
         .nav-pills.nav-stacked {
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        /* Định dạng cho các mục li */
+        .nav-pills.nav-stacked li {
+            margin-bottom: 8px; /* Khoảng cách giữa các mục */
+        }
+
+        /* Định dạng cho các liên kết a */
+        .nav-pills.nav-stacked li a {
+            display: block;
+            padding: 8px 15px; /* Giảm padding để trông gọn gàng hơn */
+            background-color: #f1f1f1; /* Màu nền sáng nhẹ */
+            color: #555; /* Màu chữ xám đậm */
+            text-decoration: none; /* Xóa gạch chân */
+            border-radius: 15px; /* Bo tròn góc nhẹ */
+            font-size: 14px; /* Giảm kích thước chữ */
+            font-weight: 400; /* Độ đậm chữ nhẹ */
+            transition: background-color 0.3s ease, transform 0.2s ease; /* Hiệu ứng chuyển nền và phóng to */
+        }
+
+        /* Khi hover vào liên kết */
+        .nav-pills.nav-stacked li a:hover {
+            background-color: #ff980f; /* Màu nền khi hover */
+            color: #fff; /* Màu chữ trắng khi hover */
+            transform: scale(1.02); /* Hiệu ứng phóng to nhẹ khi hover */
+        }
+
+        /* Hiệu ứng khi hover mục li */
+        .nav-pills.nav-stacked li:hover a {
+            text-decoration: none; /* Đảm bảo không có gạch chân khi hover */
+        }
+        /* css cho giỏ hàng */
+        .cart_menu {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
 }
 
-/* Định dạng cho các mục li */
-.nav-pills.nav-stacked li {
-    margin-bottom: 8px; /* Khoảng cách giữa các mục */
+.table-responsive.cart_info {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 15px;
 }
 
-/* Định dạng cho các liên kết a */
-.nav-pills.nav-stacked li a {
+.cart_product img {
+    max-width: 60px;
+    border-radius: 8px;
+}
+
+.cart_description h4 a {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    text-decoration: none;
     display: block;
-    padding: 8px 15px; /* Giảm padding để trông gọn gàng hơn */
-    background-color: #f1f1f1; /* Màu nền sáng nhẹ */
-    color: #555; /* Màu chữ xám đậm */
-    text-decoration: none; /* Xóa gạch chân */
-    border-radius: 15px; /* Bo tròn góc nhẹ */
-    font-size: 14px; /* Giảm kích thước chữ */
-    font-weight: 400; /* Độ đậm chữ nhẹ */
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Hiệu ứng chuyển nền và phóng to */
+    line-height: 1.4;
 }
 
-/* Khi hover vào liên kết */
-.nav-pills.nav-stacked li a:hover {
-    background-color: #ff980f; /* Màu nền khi hover */
-    color: #fff; /* Màu chữ trắng khi hover */
-    transform: scale(1.02); /* Hiệu ứng phóng to nhẹ khi hover */
+.cart_price p, .cart_total p {
+    font-size: 15px;
+    margin: 0;
+    color: #444;
 }
 
-/* Hiệu ứng khi hover mục li */
-.nav-pills.nav-stacked li:hover a {
-    text-decoration: none; /* Đảm bảo không có gạch chân khi hover */
+.cart_price span {
+    display: block;
 }
+
+.cart_price span:first-child {
+    font-size: 13px;
+}
+
+.cart_price span:last-child {
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.cart_quantity_button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.cart_quantity_button a {
+    display: inline-block;
+    background: #fe980f;
+    color: white;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.cart_quantity_button a:hover {
+    background: #e78c13;
+}
+
+.cart_quantity_input {
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 5px 10px;
+    width: 50px;
+    background: #f9f9f9;
+    font-size: 14px;
+}
+
+.cart_delete a {
+    color: #e74c3c;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+.cart_delete a:hover {
+    color: #c0392b;
+}
+.total_area ul li{
+    background: none;
+}
+
+
+
     </style>
 </head><!--/head-->
 
@@ -256,6 +352,7 @@
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
 								<li><a href="{{URL::to('/trang-chu')}}" class="active">Trang chủ</a></li>
+                                <li><a href="{{URL::to('/trang-chu')}}" >Giới thiệu</a></li>
 								<!-- <li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu">
                                         <li><a href="shop.html">Products</a></li>
@@ -322,12 +419,12 @@
 
 	<section id="cart_items">
 		<div class="container">
-			<div class="breadcrumbs">
-				<ol class="breadcrumb">
-				  <li><a href="{{URL::to('/trang-chu')}}">Trang chủ</a></li>
-				  <li class="active">Giỏ hàng của bạn</li>
-				</ol>
-			</div>
+			<nav aria-label="breadcrumb">
+                <ol class="breadcrumb" style="background:none;">
+                    <li class="breadcrumb-item"><a href="{{url('/')}}">Trang chủ</a></li>
+                    <li class="breadcrumb-item active" style="border:none;" aria-current="page">Giỏ hàng của bạn</li>
+                </ol>
+            </nav>
 			<div class="table-responsive cart_info">
                 <?php
                     $content = Cart::getContent();
@@ -402,107 +499,79 @@
 		</div>
 	</section> <!--/#cart_items-->
 
-	<section id="do_action">
-		<div class="container">
-			<!-- <div class="heading">
-				<h3>What would you like to do next?</h3>
-				<p>Choose if you have a discount code or reward points you want to use or would like to estimate your delivery cost.</p>
-			</div> -->
-			<div class="row">
-				<div class="col-sm-6">
-					<!-- <div class="chose_area">
-						<ul class="user_option">
-							<li>
-								<input type="checkbox">
-								<label>Use Coupon Code</label>
-							</li>
-							<li>
-								<input type="checkbox">
-								<label>Use Gift Voucher</label>
-							</li>
-							<li>
-								<input type="checkbox">
-								<label>Estimate Shipping & Taxes</label>
-							</li>
-						</ul>
-						<ul class="user_info">
-							<li class="single_field">
-								<label>Country:</label>
-								<select>
-									<option>United States</option>
-									<option>Bangladesh</option>
-									<option>UK</option>
-									<option>India</option>
-									<option>Pakistan</option>
-									<option>Ucrane</option>
-									<option>Canada</option>
-									<option>Dubai</option>
-								</select>
+    <section id="do_action" style="">
+        <div class="container" style="max-width: 1140px; margin: auto;">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div style="background-color: #fff; padding: 20px;  border: 1px solid #eee; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+                        <h4 style="margin-bottom: 15px; font-weight: 600; color: #333;">Hỗ trợ & Chính sách</h4>
+                        <ul style="list-style: none; padding-left: 0; font-size: 15px; line-height: 1.8; color: #555;">
+                            <li>📞 <strong>Hotline:</strong> 0867677891</li>
+                            <li>💬 <strong>Chatbot:</strong> Tư vấn trực tuyến</li>
+                            <li>🚚 <strong>Giao hàng:</strong> 2h nội thành, 1-3 ngày toàn quốc</li>
+                            <li>🔁 <strong>Đổi trả:</strong> Trong vòng 7 ngày nếu lỗi kỹ thuật</li>
+                            <li>🔒 <strong>Bảo mật:</strong> Cam kết an toàn thông tin</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="total_area" style="background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 20px 25px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                        <ul style="list-style: none; padding: 0; margin-bottom: 20px;">
+                            <li style="font-size: 16px; font-weight: 500; color: #444; padding: 10px 0; border-bottom: 1px dashed #ccc; display: flex; justify-content: space-between;">
+                                Tổng tiền giỏ hàng
+                                <span id="cart_total" style="color: #fe980f; font-weight: 600; font-size: 15px;">
+                                    {{ number_format(Cart::getTotal(), 0, ',', '.') . ' VNĐ' }}
+                                </span>
+                            </li>
+                            <li style="font-size: 16px; font-weight: 500; color: #444; padding: 10px 0; border-bottom: 1px dashed #ccc; display: flex; justify-content: space-between;">
+                                Thuế VAT (10%)
+                                <span id="vat" style="color: #fe980f; font-weight: 600; font-size: 15px;">
+                                    {{ number_format(Cart::getTotal() * 0.1, 0, ',', '.') . ' VNĐ' }}
+                                </span>
+                            </li>
+                            <li style="font-size: 16px; font-weight: 600; color: #000; padding: 10px 0; display: flex; justify-content: space-between;">
+                                Thành tiền
+                                <span id="grand_total" style="color: #fe980f; font-weight: 600; font-size: 15px;">
+                                    <?php
+                                        $subtotal = Cart::getTotal();
+                                        $vat = $subtotal * 0.1;
+                                        $total = $subtotal + $vat;
+                                        echo number_format($total, 0, ',', '.') . ' VNĐ';
+                                    ?>
+                                </span>
+                            </li>
+                        </ul>
 
-							</li>
-							<li class="single_field">
-								<label>Region / State:</label>
-								<select>
-									<option>Select</option>
-									<option>Dhaka</option>
-									<option>London</option>
-									<option>Dillih</option>
-									<option>Lahore</option>
-									<option>Alaska</option>
-									<option>Canada</option>
-									<option>Dubai</option>
-								</select>
+                        @php
+                            $customer_id = Session::get('customer_id');
+                            if (!$customer_id) {
+                                $redirect_url = '/login-checkout';
+                            } else {
+                                $shipping_info = DB::table('tbl_shipping')->where('customer_id', $customer_id)->first();
+                                $redirect_url = $shipping_info ? '/payment' : '/checkout';
+                            }
+                        @endphp
+                        <div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 20px;">
+                            <a class="btn btn-default check_out" href="{{ URL::to('/') }}"
+                                style="background-color: #fe980f; color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600; text-transform: uppercase; transition: all 0.3s ease; text-decoration: none; display: inline-block; border: none; flex: 1; text-align: center;"
+                                onmouseover="this.style.backgroundColor='#e67e22'; this.style.transform='scale(1.03)';"
+                                onmouseout="this.style.backgroundColor='#fe980f'; this.style.transform='scale(1)'">
+                                Tiếp tục mua hàng
+                            </a>
 
-							</li>
-							<li class="single_field zip-field">
-								<label>Zip Code:</label>
-								<input type="text">
-							</li>
-						</ul>
-						<a class="btn btn-default update" href="">Get Quotes</a>
-						<a class="btn btn-default check_out" href="">Continue</a>
-					</div> -->
-				</div>
-				<div class="col-sm-6">
-					<div class="total_area">
-                    <ul>
-                        <li>Tổng tiền giỏ hàng <span id="cart_total">{{ number_format(Cart::getTotal(), 0, ',', '.') . ' VNĐ' }}</span></li>
-                        <li>Thuế VAT (10%) <span id="vat">{{ number_format(Cart::getTotal() * 0.1, 0, ',', '.') . ' VNĐ' }}</span></li>
-                        <li>Thành tiền <span id="grand_total">
-                            <?php
-                            $subtotal = Cart::getTotal();
-                            $vat = $subtotal * 0.1;
-                            $total = $subtotal + $vat;
-                            echo number_format($total, 0, ',', '.') . ' VNĐ';
-                            ?>
-                        </span></li>
+                            <a class="btn btn-default check_out" href="{{ !$customer_id ? URL::to('/login-checkout?redirect_to_checkout=1') : URL::to($redirect_url) }}"
+                                style="background-color: #fe980f; color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600; text-transform: uppercase; transition: all 0.3s ease; text-decoration: none; display: inline-block; border: none; flex: 1; text-align: center;"
+                                onmouseover="this.style.backgroundColor='#e67e22'; this.style.transform='scale(1.03)';"
+                                onmouseout="this.style.backgroundColor='#fe980f'; this.style.transform='scale(1)'">
+                                Đặt hàng
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                    </ul>
-                    @php
-                        $customer_id = Session::get('customer_id');
-
-                        if (!$customer_id) {
-                            // Nếu chưa đăng nhập, luôn chuyển đến trang đăng nhập
-                            $redirect_url = '/login-checkout';
-                        } else {
-                            // Nếu đã đăng nhập, kiểm tra địa chỉ giao hàng
-                            $shipping_info = DB::table('tbl_shipping')
-                                ->where('customer_id', $customer_id)
-                                ->first();
-
-                            // Nếu có địa chỉ => chuyển đến trang thanh toán, nếu không => yêu cầu nhập địa chỉ
-                            $redirect_url = $shipping_info ? '/payment' : '/checkout';
-                        }
-                    @endphp
-
-                    <a class="btn btn-default check_out" href="{{ URL::to($redirect_url) }}">Đặt hàng</a>
-							<!-- <a class="btn btn-default update" href="">Update</a> -->
-
-					</div>
-				</div>
-			</div>
-		</div>
-	</section><!--/#do_action-->
 
 	<footer id="footer" ><!--Footer-->
 		<div class="footer-top">
@@ -584,7 +653,7 @@
                     <h2 style="font-size: 18px; font-weight: bold; color: #333; margin-bottom: 16px;">Liên hệ</h2>
                     <ul class="nav nav-pills nav-stacked" style="list-style: none; padding: 0; line-height: 1.8;">
                         <li><a href="#" style="color: #555;"><i class="fa fa-phone"></i> Hotline: 0867677891</a></li>
-                        <li><a href="#" style="color: #555;"><i class="fa fa-envelope"></i> Email: contact@paddy.vn</a></li>
+                        <li><a href="#" style="color: #555;"><i class="fa fa-envelope"></i> Email: contact@furryfriend.vn</a></li>
                     </ul>
                     </div>
                 </div>
@@ -676,7 +745,7 @@
 </body>
 </html>
 <!-- Thêm CSRF token vào meta -->
-// JavaScript để hover xổ menu tai khoan
+<!-- JavaScript để hover xổ menu tai khoan -->
      <script>
         document.querySelectorAll('li[style]').forEach(function(item) {
           item.addEventListener('mouseenter', function() {

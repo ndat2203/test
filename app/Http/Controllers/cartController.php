@@ -131,7 +131,7 @@ class cartController extends Controller
 
     public function check_coupon(Request $request) {
         $data = $request->all();
-        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('d-m-Y');
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
         $counpon = Counpon::where('counpon_code', $data['counpon'])
                             ->where('counpon_date_end','>=', $today)
                             ->first(); // Tìm mã giảm giá

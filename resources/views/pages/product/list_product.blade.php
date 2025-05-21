@@ -2,24 +2,29 @@
 @section('content')
 
 <div class="features_items"><!--features_items-->
-            @foreach($category_name as $key => $value)
-                @if($value->category_status == 1)
-                    <h2 style="margin-top:5px;" class="title text-center">Danh mục {{ $value->category_name }}</h2>
-                @endif
-            @endforeach
+            <h2 class="title text-center">
+                @switch($type)
+                    @case('moi-nhat') Sản phẩm mới về @break
+                    @case('xem-nhieu') Sản phẩm xem nhiều nhất @break
+                    @case('mua-nhieu') Sản phẩm mua nhiều @break
+                    @case('giam-gia') Sản phẩm giảm giá @break
+                    @default Sản phẩm
+                @endswitch
+            </h2>
             <div class="row" style="margin-bottom: 24px; justify-content: center;">
                 <div class="col-md-4" style="display: flex; flex-direction: column;">
                 <label for="sort" style="font-weight: 600; font-size: 16px; color: #333; margin-bottom: 8px;margin-left: 15px;">Sắp xếp theo</label>
                     <form action="" style="width: 100%;">
                         @csrf
                         <select name="sort" id="sort" class="form-control"
-                            style="width: 100%; padding: 7px 14px; border-radius: 10px; border: 1px solid #ccc; font-size: 15px; background-color: #fff; color: #333; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s;margin-left: 15px;">
-                            <option value="{{ Request::url() }}?sort_by=none" {{ request('sort_by') == 'none' ? 'selected' : '' }}>--Lọc--</option>
-                            <option value="{{ Request::url() }}?sort_by=tang_dan" {{ request('sort_by') == 'tang_dan' ? 'selected' : '' }}>Giá tăng dần</option>
-                            <option value="{{ Request::url() }}?sort_by=giam_dan" {{ request('sort_by') == 'giam_dan' ? 'selected' : '' }}>Giá giảm dần</option>
-                            <option value="{{ Request::url() }}?sort_by=kytu_az" {{ request('sort_by') == 'kytu_az' ? 'selected' : '' }}>A đến Z</option>
-                            <option value="{{ Request::url() }}?sort_by=kytu_za" {{ request('sort_by') == 'kytu_za' ? 'selected' : '' }}>Z đến A</option>
+                            style="width: 100%; padding: 7px 14px; border-radius: 10px; border: 1px solid #ccc; font-size: 15px; background-color: #fff; color: #333; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s; margin-left: 15px;"
+                            onchange="window.location.href = this.value">
 
+                            <option value="{{ request()->fullUrlWithQuery(['sort_by' => 'none']) }}" {{ request('sort_by') == 'none' ? 'selected' : '' }}>--Lọc--</option>
+                            <option value="{{ request()->fullUrlWithQuery(['sort_by' => 'tang_dan']) }}" {{ request('sort_by') == 'tang_dan' ? 'selected' : '' }}>Giá tăng dần</option>
+                            <option value="{{ request()->fullUrlWithQuery(['sort_by' => 'giam_dan']) }}" {{ request('sort_by') == 'giam_dan' ? 'selected' : '' }}>Giá giảm dần</option>
+                            <option value="{{ request()->fullUrlWithQuery(['sort_by' => 'kytu_az']) }}" {{ request('sort_by') == 'kytu_az' ? 'selected' : '' }}>A đến Z</option>
+                            <option value="{{ request()->fullUrlWithQuery(['sort_by' => 'kytu_za']) }}" {{ request('sort_by') == 'kytu_za' ? 'selected' : '' }}>Z đến A</option>
                         </select>
                     </form>
                 </div>
@@ -49,8 +54,8 @@
                 </div>
             </div>
 
-            @foreach($category_by_id as $key => $product)
-                @if($product->category_status == 1 && $product->product_status == 1)
+            @foreach($products as $key => $product)
+                @if($product->product_status == 1)
                         <a href="{{URL::to('chi-tiet-san-pham/'.$product->product_slug)}}">
                             <div class="col-sm-4">
                                 <div class="product-image-wrapper">
@@ -186,7 +191,7 @@
             <div class="col-sm-12" style="display:flex;justify-content:end;">
                 <nav aria-label="Page navigation">
                     <ul class="pagination justify-content-end">
-                        {{ $category_by_id->links('vendor.pagination.bootstrap-4') }}
+                        {{ $products->links('vendor.pagination.bootstrap-4') }}
                     </ul>
                 </nav>
             </div>

@@ -4,7 +4,7 @@
 <div class="table-agile-info">
   <div class="panel panel-default">
     <div class="panel-heading">
-      Liệt kê sản phẩm
+      Liệt kê banner
     </div>
     <div class="table-responsive">
       <table class="table table-striped b-t b-light" id="example">

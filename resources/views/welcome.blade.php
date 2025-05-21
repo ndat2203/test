@@ -516,7 +516,9 @@
                                             @foreach($category_product as $key => $value)
                                                 @if($value->category_parent == $category->category_id)
                                                     <li style="padding: 6px 0;">
-                                                        <a href="{{URL::to('/danh-muc-san-pham/'.$value->category_slug)}}" style="color: #555; text-decoration: none; font-size: 12px; font-weight: 400; transition: color 0.3s ease;">
+                                                        <a href="{{URL::to('/danh-muc-san-pham/'.$value->category_slug)}}" style="color: #555; text-decoration: none; font-size: 12px; font-weight: 400; transition: color 0.3s ease;"
+                                                            onmouseover="this.style.color='#fe980f'; this.style.paddingLeft='5px';"
+                                                            onmouseout="this.style.color='#555'; this.style.paddingLeft='0';">
                                                             {{$value->category_name}}
                                                         </a>
                                                     </li>
@@ -553,7 +555,7 @@
 						</div><!--/price-range-->
 
 						<div class="shipping text-center"><!--shipping-->
-							<img src="{{('public/fontend/images/vanchuyentoancau.png')}}" height="350px" width="270px" alt="" />
+							<img src="{{ asset('public/fontend/images/vanchuyentoancau.png') }}" height="350px" width="270px" alt="" />
 						</div>
 
 					</div>
@@ -727,7 +729,9 @@
 
 	</footer><!--/Footer-->
 
-<!--Start of Fchat.vn--><script type="text/javascript" src="https://cdn.fchat.vn/assets/embed/webchat.js?id=6804c4b40967f4a48e03bc27" async="async"></script><!--End of Fchat.vn-->
+<!--Start of Fchat.vn-->
+    <script type="text/javascript" src="https://cdn.fchat.vn/assets/embed/webchat.js?id=6804c4b40967f4a48e03bc27" async="async"></script>
+<!--End of Fchat.vn-->
 
     <script src="{{asset('public/fontend/js/jquery.js')}}"></script>
 	<script src="{{asset('public/fontend/js/bootstrap.min.js')}}"></script>
@@ -747,7 +751,63 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
      <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-     // JavaScript để hover xổ menu tai khoan
+     <!-- // Cập nhật đường dẫn khi đổi tab -->
+     <script>
+        $(document).ready(function() {
+            function updateViewAllLink(tabId) {
+                let baseUrl = "{{ URL::to('danh-sach-san-pham') }}";
+                let queryParam = "";
+
+                // Cập nhật tham số URL cho từng tab
+                switch(tabId) {
+                    case "#tshirt":
+                        queryParam = "?type=moi-nhat";
+                        break;
+                    case "#sunglass":
+                        queryParam = "?type=xem-nhieu";
+                        break;
+                    case "#kids":
+                        queryParam = "?type=mua-nhieu";
+                        break;
+                    case "#giamgia":
+                        queryParam = "?type=giam-gia";
+                        break;
+                    default:
+                        queryParam = "";
+                        break;
+                }
+
+                // Cập nhật href cho các liên kết "Xem tất cả" của các tab tương ứng
+                if (tabId === "#tshirt") {
+                    $('#view-all-link-tshirt').attr('href', baseUrl + queryParam);
+                } else if (tabId === "#sunglass") {
+                    $('#view-all-link-sunglass').attr('href', baseUrl + queryParam);
+                } else if (tabId === "#kids") {
+                    $('#view-all-link-kids').attr('href', baseUrl + queryParam);
+                } else if (tabId === "#giamgia") {
+                    $('#view-all-link-giamgia').attr('href', baseUrl + queryParam);
+                }
+            }
+
+            // Cập nhật khi tab được click
+            $('.nav-tabs a').on('shown.bs.tab', function(e) {
+                let target = $(e.target).attr("href"); // Lấy ID của tab đang chọn
+                updateViewAllLink(target);  // Cập nhật link cho tab được chọn
+            });
+
+            // Khi trang vừa load, lấy tab đang hiển thị (active) và cập nhật link
+            let activeTab = $('.tab-pane.active'); // Thay vì lấy tab từ nav-tabs, lấy từ tab-pane
+            let initialTabId = activeTab.attr('id'); // Lấy id của tab active
+
+            if (initialTabId) {
+                updateViewAllLink("#" + initialTabId); // Cập nhật view-all link cho tab hiện tại
+            }
+        });
+    </script>
+
+
+    </script>
+     <!-- JavaScript để hover xổ menu tai khoan -->
      <script>
         document.querySelectorAll('li[style]').forEach(function(item) {
           item.addEventListener('mouseenter', function() {
@@ -882,48 +942,76 @@
     view(); // Load danh sách yêu thích khi trang tải
 </script>
 
-    <script type="text/javascript">
-
-        $('.xemnhanh').click(function(){
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Sự kiện click xem nhanh
+        $('.xemnhanh').click(function() {
             var product_id = $(this).data('id_product');
             var _token = $('input[name="_token"]').val();
+
             $.ajax({
-                url:"{{ url('/quickly-view') }}",
-                method: "post",
+                url: "{{ url('/quickly-view') }}",
+                method: "POST",
                 dataType: "JSON",
-                data: {product_id: product_id, _token: _token},
-                success: function(data){
-                $('#product_quickview_title').html(data.product_name);
-                $('#product_quickview_id').html(data.product_id);
-                $('#product_quickview_price').html(data.product_price);
-                $('#product_quickview_image').html(data.product_image);
-                $('#product_quickview_gallery').html(data.product_gallery);
-                $('#product_quickview_desc').html(data.product_desc);
-                $('#product_quickview_content').html(data.product_content);
-                $('#product_quickview_brand').html(data.product_brand);
-                $('#product_buyQuick').html(data.product_buyQuick);
-                $('#product_buyQuick_button').html(data.product_button);
-                $('#quickview_link').attr('href', 'chi-tiet-san-pham/' + data.product_slug);
-                $('#imageGallery').lightSlider({
-                    gallery:true,
-                    item:1,
-                    loop:true,
-                    thumbItem:9,
-                    slideMargin:0,
-                    enableDrag: false,
-                    currentPagerPosition:'left',
-                    onSliderLoad: function(el) {
-                        el.lightGallery({
-                            selector: '#imageGallery .lslide'
+                data: { product_id: product_id, _token: _token },
+                success: function(data) {
+                    $('#product_quickview_title').html(data.product_name);
+                    $('#product_quickview_id').html(data.product_id);
+                    $('#product_quickview_price').html(data.product_price);
+                    $('#product_quickview_image').html(data.product_image);
+                    $('#product_quickview_gallery').html(data.product_gallery);
+                    $('#product_quickview_desc').html(data.product_desc);
+                    $('#product_quickview_content').html(data.product_content);
+                    $('#productTasteContainer').html(data.product_taste);
+                    $('#product_quickview_status').html(data.product_status);
+                    $('#product_quickview_brand').html(data.product_brand);
+                    $('#product_buyQuick').html(data.product_buyQuick);
+                    $('#product_buyQuick_button').html(data.product_button);
+                    $('#quickview_link').attr('href', 'chi-tiet-san-pham/' + data.product_slug);
+
+                    // Khởi tạo lại slider sau khi render gallery
+                    $('#imageGallery').lightSlider({
+                        gallery: true,
+                        item: 1,
+                        loop: true,
+                        thumbItem: 9,
+                        slideMargin: 0,
+                        enableDrag: false,
+                        currentPagerPosition: 'left',
+                        onSliderLoad: function(el) {
+                            el.lightGallery({
+                                selector: '#imageGallery .lslide'
                             });
                         }
                     });
                 }
-
             });
         });
 
-    </script>
+        // Xử lý chọn vị (taste-option)
+        $(document).on('click', '.taste-option:not([disabled])', function() {
+            // Xóa tất cả các lựa chọn trước
+            $('.taste-option').css({
+                'border-color': '#ccc',
+                'background-color': '#fff'
+            });
+
+            // Thêm kiểu cho nút đã chọn
+            $(this).css({
+                'border-color': '#fe980f',
+                'background-color': '#fff7e6'
+            });
+
+            // Gán giá trị vào input ẩn
+            var tasteId = $(this).data('taste-id');
+            $('#selected-taste-id').val(tasteId);
+
+            // Cập nhật giá trị taste_id vào hidden input của giỏ hàng
+            $('.cart_product_taste_id_' + $(this).data('product-id')).val(tasteId);
+        });
+    });
+</script>
+
     <script type="text/javascript">
         $('#keywords').keyup(function(){
             var query = $(this).val();
@@ -974,6 +1062,7 @@
                             title: "Đã thêm sản phẩm vào giỏ hàng",
                             text: "Bạn có thể mua hàng tiếp hoặc tới giỏ hàng để tiến hành thanh toán",
                             icon: "success",
+                            timer: 1000,
                             buttons: {
                                 cancel: "Xem tiếp",
                                 confirm: {
@@ -1003,13 +1092,14 @@
                 var id = $(this).data('id_product'); // Lấy ID sản phẩm
                 var quantity = $('#product_qty').val();
                 var _token = $('input[name="_token"]').val();
-
+                var taste_id = $('#selected-taste-id').val();
                 $.ajax({
                     url: "{{ url('/save-cart') }}",
                     method: "POST",
                     data: {
                         _token: _token,
                         product_id: id,
+                        taste_id: taste_id,
                         product_qty: quantity
                     },
                     success: function(response){

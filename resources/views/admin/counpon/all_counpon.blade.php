@@ -44,7 +44,7 @@
                 @endif
             </td>
             <td>
-                @if($counpon->counpon_date_end >= $today)
+                @if(strtotime($counpon->counpon_date_end) >= strtotime($today))
                     <span style="color:green;">Còn hạn</span>
                 @else
                     <span style="color: red;">Hết hạn</span>

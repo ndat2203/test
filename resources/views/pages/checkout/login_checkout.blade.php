@@ -158,7 +158,28 @@ span {
 							<ul class="nav navbar-nav">
 
 								<li><a href="#" style="display: block; padding: 10px; text-decoration: none;"><i class="fa-solid fa-heart" ></i> Danh sách yêu thích</a></li>
-								<li><a href="{{URL::to('/show-cart')}}" style="display: block; padding: 10px; text-decoration: none;"><i class="fa fa-shopping-cart"></i> Giỏ hàng</a></li>
+								<li style="position: relative;">
+                                    <a href="{{ URL::to('/show-cart') }}" style="display: block; padding: 10px; text-decoration: none; position: relative;">
+                                        <i class="fa fa-shopping-cart"></i>
+                                        Giỏ hàng
+                                        <span class="cart-count" style="
+                                            position: absolute;
+                                            top: 4px;
+                                            right: -10px;
+                                            background: #ccc;
+                                            color: black;
+                                            font-size: 12px;
+                                            padding: 2px 6px;
+                                            border-radius: 50%;
+                                            font-weight: normal;
+                                            min-width: 20px;
+                                            text-align: center;
+                                        ">
+                                            {{ Cart::getTotalQuantity() }}
+                                        </span>
+                                    </a>
+                                </li>
+
                                 @php
                                     $customer_id = Session::get('customer_id');
                                     $shipping_id = Session::get('shipping_id');
@@ -188,15 +209,7 @@ span {
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
 								<li><a href="{{URL::to('/trang-chu')}}" class="active">Trang chủ</a></li>
-								<!-- <li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
-                                    <ul role="menu" class="sub-menu">
-                                        <li><a href="shop.html">Products</a></li>
-										<li><a href="product-details.html">Product Details</a></li>
-										<li><a href="checkout.html">Checkout</a></li>
-										<li><a href="cart.html">Cart</a></li>
-										<li><a href="login.html">Login</a></li>
-                                    </ul>
-                                </li> -->
+                                <li><a href="{{URL::to('/trang-chu')}}">Giới thiệu</a></li>
 								<li class="dropdown"><a href="#">Tin tức<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu" style="
                                         background-color: #ffffff;
@@ -230,7 +243,6 @@ span {
                                     </ul>
 
                                 </li>
-								<!-- <li><a href="404.html">404</a></li> -->
 								<li><a href="contact-us.html">Liên hệ</a></li>
 							</ul>
 						</div>
@@ -274,6 +286,9 @@ span {
                                 background: #fdfdfd;
                             " />
                             <input type="hidden" name="redirect_to_home" value="1">
+                            @if(request()->has('redirect_to_checkout'))
+                                <input type="hidden" name="redirect_to_checkout" value="1">
+                            @endif
                             <span style="display: block; margin-bottom: 10px; font-size: 14px;">
                                 <input type="checkbox" id="showPassword" style="margin-right: 5px;"> Hiển thị mật khẩu
                             </span>

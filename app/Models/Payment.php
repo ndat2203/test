@@ -13,7 +13,8 @@ class Payment extends Model
         'payment_method',
         'payment_status',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'order_id'
 
     ];
     protected $primaryKey = 'payment_id';

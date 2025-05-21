@@ -141,7 +141,7 @@ class categoryProductController extends Controller
                         ->join('tbl_category_product', 'tbl_category_product.category_id', '=', 'tbl_product.category_id')
                         ->where('tbl_product.category_id',$category_id)
                         ->orderby('product_price', 'desc')
-                        ->paginate(6)
+                        ->paginate(10)
                         ->appends(request()->query());
 
             }else if($sort_by == 'tang_dan'){
@@ -149,7 +149,7 @@ class categoryProductController extends Controller
                         ->join('tbl_category_product', 'tbl_category_product.category_id', '=', 'tbl_product.category_id')
                         ->where('tbl_product.category_id',$category_id)
                         ->orderby('product_price', 'asc')
-                        ->paginate(6)
+                        ->paginate(10)
                         ->appends(request()->query());
 
             }else if($sort_by == 'kytu_az'){
@@ -157,7 +157,7 @@ class categoryProductController extends Controller
                         ->join('tbl_category_product', 'tbl_category_product.category_id', '=', 'tbl_product.category_id')
                         ->where('tbl_product.category_id',$category_id)
                         ->orderby('product_name', 'asc')
-                        ->paginate(6)
+                        ->paginate(10)
                         ->appends(request()->query());
 
             }else if($sort_by == 'kytu_za'){
@@ -165,7 +165,7 @@ class categoryProductController extends Controller
                         ->join('tbl_category_product', 'tbl_category_product.category_id', '=', 'tbl_product.category_id')
                         ->where('tbl_product.category_id',$category_id)
                         ->orderby('product_name', 'desc')
-                        ->paginate(6)
+                        ->paginate(10)
                         ->appends(request()->query());
                                                         //    ->appends(request()->query());
             }
@@ -177,7 +177,7 @@ class categoryProductController extends Controller
                         ->join('tbl_category_product', 'tbl_category_product.category_id', '=', 'tbl_product.category_id')
                         ->whereBetween('tbl_product.product_price', [$min_price, $max_price])
                         ->orderBy('tbl_product.product_id', 'asc')
-                        ->paginate(6)
+                        ->paginate(10)
                         ->appends(request()->query());
 
         }else{
@@ -185,7 +185,7 @@ class categoryProductController extends Controller
                         ->join('tbl_category_product', 'tbl_category_product.category_id', '=', 'tbl_product.category_id')
                         ->where('tbl_product.category_id',$category_id)
                         ->orderby('product_id', 'desc')
-                        ->paginate(6);
+                        ->paginate(10);
             // $category_by_id = Product::with('category')->where('category_id', $category_id)
             //                                                ->orderby('product_id', 'desc')
             //                                                ->paginate(6);

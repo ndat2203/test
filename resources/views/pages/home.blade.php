@@ -268,17 +268,20 @@
                             <h2 class="quickview"><span id="product_quickview_title"></span></h2>
                             <p>Mã ID sản phẩm: <span id="product_quickview_id"></span></p>
                             <p class="product-price">Giá sản phẩm: <span id="product_quickview_price"></span></p>
-                            <p>Thương hiệu: <span id="product_quickview_brand"></span></p>
-                            <span style="display: flex; align-items: center; margin-top: 5px;">
-                                <div class="quantity-container">
-                                    <label for="product_qty">Số lượng:</label>
-                                    <input name="product_qty" id="product_qty" type="number" min="1" value="1" />
+                            <div id="productTasteContainer"></div>
+
+                            <span style="display: flex; flex-direction: column; align-items: flex-start; gap: 10px;">
+                                <div class="quantity-container" style="display: flex; align-items: center; gap: 10px;">
+                                    <label for="product_qty" style="margin: 0; font-weight: 500;">Số lượng:</label>
+                                    <input name="product_qty" id="product_qty" type="number" min="1" value="1"
+                                        style="padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px; width: 60px;"/>
                                 </div>
-                                <!-- <button type="submit" class="btn btn-fefault cart" style="margin-top:10px;border-radius:5px;">
-                                    <i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
-                                </button> -->
+                                <!-- Div for the 'Add to Cart' button -->
                                 <div id="product_buyQuick_button"></div>
+
                             </span>
+                            <p>Tình trạng: <span id="product_quickview_status"></span></p>
+                            <p>Thương hiệu: <span id="product_quickview_brand"></span></p>
                             <!-- <p><span id="product_quickview_desc"></span></p>
                             <p><span id="product_quickview_content"></span></p> -->
 
@@ -300,18 +303,44 @@
     <div class="category-tab"><!--category-tab-->
                             <div class="col-sm-12">
                                 <ul class="nav nav-tabs">
-                                    <li class="active"><a href="#tshirt" data-toggle="tab">Mới nhất</a></li>
+                                    <li class="active"><a href="#tshirt" data-toggle="tab">Mới về</a></li>
                                     <li><a href="#sunglass" data-toggle="tab">Xem nhiều nhất</a></li>
                                     <li><a href="#kids" data-toggle="tab">Mua nhiều</a></li>
                                     <li><a href="#giamgia" data-toggle="tab">Giảm giá</a></li>
                                 </ul>
                             </div>
+                            <style>
+                                #view-all-link-tshirt,#view-all-link-sunglass,#view-all-link-kids,#view-all-link-giamgia {
+                                    display: inline-block;
+                                    background-color: transparent;
+                                    font-size: 14px;
+                                    font-weight: 400;
+                                    padding: 8px 16px;
+                                    text-decoration: none;
+                                    transition: all 0.3s ease;
+                                    margin-right: 15px;
+                                }
+
+                                #view-all-link-tshirt:hover,
+                                #view-all-link-sunglass:hover,
+                                #view-all-link-kids:hover,
+                                #view-all-link-giamgia:hover {
+                                    color: #fe980f; /* Màu chữ khi hover */
+                                }
+
+                                #view-all-link-tshirt:focus,
+                                #view-all-link-sunglass:focus,
+                                #view-all-link-kids:focus,
+                                #view-all-link-giamgia:focus {
+                                    outline: none; /* Loại bỏ outline khi nút được chọn */
+                                }
+                            </style>
                             <div class="tab-content">
-                                <div class="tab-pane fade active in" id="tshirt" >
+                                <div class="tab-pane fade in active" id="tshirt" >
                                     <!-- Nút Xem tất cả -->
-                                    <div style="text-align: right">
-                                        <a href="{{ URL::to('danh-sach-san-pham') }}" style="text-decoration: none;margin-right:15px;">
-                                            Xem tất cả
+                                    <div style="text-align: right;">
+                                        <a id="view-all-link-tshirt" href="{{ URL::to('danh-sach-san-pham') }}">
+                                            Xem tất cả &gt;
                                         </a>
                                     </div>
                                     @foreach ($product_latest as $key => $product)
@@ -323,22 +352,29 @@
                                                         <form>
                                                         @csrf
                                                             <a href="{{ URL::to('chi-tiet-san-pham/' . $product->product_slug) }}">
-                                                                <img id="wishlish_productImage{{$product->product_id}}" src="{{ URL::to('public/upload/product/' . $product->product_image) }}" alt="" style="height: 200px; object-fit: cover;" />
+                                                                <div style="position: relative;">
+                                                                    <img id="wishlish_productImage{{$product->product_id}}" src="{{ URL::to('public/upload/product/' . $product->product_image) }}" alt="" style="height: 200px; object-fit: cover; width: 100%;" />
 
                                                                     @if (!empty($product->product_discount_price))
-                                                                    <h2>
+                                                                        <span style="position: absolute; top: 10px; left: 10px; background-color: red; color: white; padding: 3px 8px; font-size: 12px; border-radius: 4px;">
+                                                                            Giảm giá
+                                                                        </span>
+                                                                    @endif
+                                                                </div>
+                                                                @if (!empty($product->product_discount_price))
+                                                                    <h2 style="font-size: 18px; display: flex; flex-wrap: wrap; align-items: center;">
                                                                         <span style="text-decoration: line-through; color: #999; font-size: 16px; margin-right: 10px;">
                                                                             {{ number_format($product->product_price, 0, ',', '.') }} VNĐ
                                                                         </span>
-                                                                        <span style="color: #fe980f;">
+                                                                        <span style="color: #fe980f; font-size: 18px;">
                                                                             {{ number_format($product->product_discount_price, 0, ',', '.') }} VNĐ
                                                                         </span>
                                                                     </h2>
-                                                                    @else
-                                                                        <h2 style="color: #fe980f;">
-                                                                            {{ number_format($product->product_price, 0, ',', '.') }} VNĐ
-                                                                        </h2>
-                                                                    @endif
+                                                                @else
+                                                                    <h2 style="color: #fe980f; font-size: 18px;">
+                                                                        {{ number_format($product->product_price, 0, ',', '.') }} VNĐ
+                                                                    </h2>
+                                                                @endif
 
                                                                 <p>{{ $product->product_name }}</p>
                                                             </a>
@@ -368,8 +404,8 @@
                                 <div class="tab-pane fade" id="sunglass" >
                                     <!-- Nút Xem tất cả -->
                                     <div style="text-align: right">
-                                        <a href="{{ URL::to('danh-sach-san-pham') }}" style="text-decoration: none;margin-right:15px;">
-                                            Xem tất cả
+                                        <a id="view-all-link-sunglass" href="{{ URL::to('danh-sach-san-pham') }}" style="text-decoration: none;margin-right:15px;">
+                                            Xem tất cả &gt;
                                         </a>
                                     </div>
                                     @foreach ($product_view as $key => $product)
@@ -382,17 +418,16 @@
                                                             <form>
                                                             @csrf
                                                                 <a href="{{ URL::to('chi-tiet-san-pham/' . $product->product_slug) }}">
-                                                                        <div style="position: relative;">
-                                                                            <img id="wishlish_productImage{{$product->product_id}}" src="{{ URL::to('public/upload/product/' . $product->product_image) }}" alt="" style="height: 200px; object-fit: cover; width: 100%;" />
-
-                                                                            @if (!empty($product->product_discount_price))
-                                                                                <span style="position: absolute; top: 10px; left: 10px; background-color: red; color: white; padding: 3px 8px; font-size: 12px; border-radius: 4px;">
-                                                                                    Giảm giá
-                                                                                </span>
-                                                                            @endif
-                                                                        </div>
+                                                                    <div style="position: relative;">
+                                                                        <img id="wishlish_productImage{{$product->product_id}}" src="{{ URL::to('public/upload/product/' . $product->product_image) }}" alt="" style="height: 200px; object-fit: cover; width: 100%;" />
 
                                                                         @if (!empty($product->product_discount_price))
+                                                                            <span style="position: absolute; top: 10px; left: 10px; background-color: red; color: white; padding: 3px 8px; font-size: 12px; border-radius: 4px;">
+                                                                                Giảm giá
+                                                                            </span>
+                                                                        @endif
+                                                                    </div>
+                                                                    @if (!empty($product->product_discount_price))
                                                                         <h2 style="font-size: 18px; display: flex; flex-wrap: wrap; align-items: center;">
                                                                             <span style="text-decoration: line-through; color: #999; font-size: 16px; margin-right: 10px;">
                                                                                 {{ number_format($product->product_price, 0, ',', '.') }} VNĐ
@@ -401,11 +436,11 @@
                                                                                 {{ number_format($product->product_discount_price, 0, ',', '.') }} VNĐ
                                                                             </span>
                                                                         </h2>
-                                                                        @else
-                                                                            <h2 style="color: #fe980f; font-size: 18px;">
-                                                                                {{ number_format($product->product_price, 0, ',', '.') }} VNĐ
-                                                                            </h2>
-                                                                        @endif
+                                                                    @else
+                                                                        <h2 style="color: #fe980f; font-size: 18px;">
+                                                                            {{ number_format($product->product_price, 0, ',', '.') }} VNĐ
+                                                                        </h2>
+                                                                    @endif
                                                                     <p>{{ $product->product_name }}</p>
                                                                 </a>
                                                                 <input type="hidden" class="cart_product_id_{{ $product->product_id }}" value="{{ $product->product_id }}">
@@ -437,8 +472,8 @@
                                 <div class="tab-pane fade" id="kids" >
                                     <!-- Nút Xem tất cả -->
                                     <div style="text-align: right">
-                                        <a href="{{ URL::to('danh-sach-san-pham') }}" style="text-decoration: none;margin-right:15px;">
-                                            Xem tất cả
+                                        <a id="view-all-link-kids" href="{{ URL::to('danh-sach-san-pham') }}" style="text-decoration: none;margin-right:15px;">
+                                            Xem tất cả &gt;
                                         </a>
                                     </div>
                                     @foreach ($product_sold as $key => $product)
@@ -460,16 +495,15 @@
                                                                             </span>
                                                                         @endif
                                                                     </div>
-
                                                                     @if (!empty($product->product_discount_price))
-                                                                    <h2 style="font-size: 18px; display: flex; flex-wrap: wrap; align-items: center;">
-                                                                        <span style="text-decoration: line-through; color: #999; font-size: 16px; margin-right: 10px;">
-                                                                            {{ number_format($product->product_price, 0, ',', '.') }} VNĐ
-                                                                        </span>
-                                                                        <span style="color: #fe980f; font-size: 18px;">
-                                                                            {{ number_format($product->product_discount_price, 0, ',', '.') }} VNĐ
-                                                                        </span>
-                                                                    </h2>
+                                                                        <h2 style="font-size: 18px; display: flex; flex-wrap: wrap; align-items: center;">
+                                                                            <span style="text-decoration: line-through; color: #999; font-size: 16px; margin-right: 10px;">
+                                                                                {{ number_format($product->product_price, 0, ',', '.') }} VNĐ
+                                                                            </span>
+                                                                            <span style="color: #fe980f; font-size: 18px;">
+                                                                                {{ number_format($product->product_discount_price, 0, ',', '.') }} VNĐ
+                                                                            </span>
+                                                                        </h2>
                                                                     @else
                                                                         <h2 style="color: #fe980f; font-size: 18px;">
                                                                             {{ number_format($product->product_price, 0, ',', '.') }} VNĐ
@@ -503,8 +537,8 @@
                                 <div class="tab-pane fade" id="giamgia" >
                                     <!-- Nút Xem tất cả -->
                                     <div style="text-align: right">
-                                        <a href="{{ URL::to('danh-sach-san-pham') }}" style="text-decoration: none;margin-right:15px;">
-                                            Xem tất cả
+                                        <a id="view-all-link-giamgia" href="{{ URL::to('danh-sach-san-pham') }}" style="text-decoration: none;margin-right:15px;">
+                                            Xem tất cả &gt;
                                         </a>
                                     </div>
                                     @foreach ($product_discount as $key => $product)

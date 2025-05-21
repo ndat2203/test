@@ -19,6 +19,7 @@
                 <th>Mã đơn hàng</th>
                 <th>Tên người đặt</th>
                 <th>Ngày đặt</th>
+                <th>Phương thức thanh toán</th>
                 <th>Trạng thái thanh toán</th>
                 <th>Tình trạng</th>
                 <th>Giá trị đơn hàng</th>
@@ -31,8 +32,9 @@
                     <td><label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label></td>
                     <td>{{ $order_items->first()->order_code }}</td>
                     <td>{{ $order_items->first()->customer_name }}</td>
-                    <td>{{ $order_items->first()->order_date }}</td>
+                    <td>{{ date('d-m-Y', strtotime($order_items->first()->order_date)) }}</td>
                     <td> {{ $order_items->first()->payment_method }}</td>
+                    <td> {{ $order_items->first()->payment_status }}</td>
                     @php
                     $statuses = ['Chờ xử lý', 'Đang giao', 'Đã giao', 'Đã huỷ', 'Hoàn trả'];
                     $currentStatus = $order_items->first()->order_status;

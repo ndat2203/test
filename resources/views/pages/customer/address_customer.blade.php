@@ -13,7 +13,7 @@
     <link rel="icon" type="image/x-icon" href="">
     <!-- End Seo meta -->
     <title>{{$meta_title}}</title>
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="{{asset('public/fontend/css/bootstrap.min.css')}}" rel="stylesheet">
 
     <link href="{{asset('public/fontend/css/font-awesome.min.css')}}" rel="stylesheet">
@@ -300,15 +300,7 @@
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
 								<li><a href="{{URL::to('/trang-chu')}}" class="active">Trang chủ</a></li>
-								<!-- <li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
-                                    <ul role="menu" class="sub-menu">
-                                        <li><a href="shop.html">Products</a></li>
-										<li><a href="product-details.html">Product Details</a></li>
-										<li><a href="checkout.html">Checkout</a></li>
-										<li><a href="cart.html">Cart</a></li>
-										<li><a href="login.html">Login</a></li>
-                                    </ul>
-                                </li> -->
+                                <li><a href="{{URL::to('/trang-chu')}}">Giới thiệu</a></li>
 								<li class="dropdown"><a href="#">Tin tức<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu" style="
                                         background-color: #ffffff;
@@ -712,6 +704,31 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Thêm jQuery nếu chưa có -->
 <script>
+    function deleteShipping(shippingId) {
+        $.ajax({
+            url: '{{ route('deleteShipping') }}',
+            type: 'post',
+            data: {
+                _token: "{{ csrf_token() }}",
+                shipping_id: shippingId
+            },
+            success: function(response) {
+                if(response.status === 'success') {
+                    toastr.success(response.message);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 500);
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function() {
+                toastr.error('Có lỗi xảy ra!');
+            }
+        });
+    }
+</script>
+<script>
     $(document).ready(function () {
         setTimeout(function () {
             $("#success-message, #error-message").fadeOut();
@@ -782,7 +799,7 @@
         });
     });
 </script>
-// JavaScript để hover xổ menu tai khoan
+<!-- JavaScript để hover xổ menu tai khoan -->
 <script>
     document.querySelectorAll('li[style]').forEach(function (item) {
         item.addEventListener('mouseenter', function () {

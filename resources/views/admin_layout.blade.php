@@ -99,6 +99,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     padding-right: 15px;
 }
 
+
 </style>
 </head>
 <body>
@@ -208,6 +209,16 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                     <ul class="sub">
 						<li><a href="{{URL::to('/manage-order')}}">Quản lý đơn hàng</a></li>
 
+                    </ul>
+                </li>
+                <li class="sub-menu">
+                    <a href="javascript:;">
+                       <i class="fa-solid fa-warehouse"></i>
+                        <span>Kho</span>
+                    </a>
+                    <ul class="sub">
+						<li><a href="{{URL::to('/manage-warehouse')}}">Quản lý tồn kho</a></li>
+                        <li><a href="{{ URL::to('/import-product') }}">Nhập hàng</a></li>
                     </ul>
                 </li>
                 <li class="sub-menu">

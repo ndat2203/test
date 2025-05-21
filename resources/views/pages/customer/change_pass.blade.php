@@ -300,15 +300,7 @@
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
 								<li><a href="{{URL::to('/trang-chu')}}" class="active">Trang chủ</a></li>
-								<!-- <li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
-                                    <ul role="menu" class="sub-menu">
-                                        <li><a href="shop.html">Products</a></li>
-										<li><a href="product-details.html">Product Details</a></li>
-										<li><a href="checkout.html">Checkout</a></li>
-										<li><a href="cart.html">Cart</a></li>
-										<li><a href="login.html">Login</a></li>
-                                    </ul>
-                                </li> -->
+                                <li><a href="{{URL::to('/trang-chu')}}">Giới thiệu</a></li>
 								<li class="dropdown"><a href="#">Tin tức<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu" style="
                                         background-color: #ffffff;
@@ -431,7 +423,9 @@
                                 </div>
 
                                 <div style="display: flex; justify-content: space-between;">
-                                    <button type="submit" style="width: 48%; padding: 10px; background: #f39c12; border: none; border-radius: 6px; font-weight: bold; color: white; cursor: pointer;">
+                                    <button type="submit" style="background-color: #fe980f; color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600; text-transform: uppercase; transition: all 0.3s ease; text-decoration: none; display: inline-block; border: none; flex: 1; text-align: center;"
+                                        onmouseover="this.style.backgroundColor='#e67e22'; this.style.transform='scale(1.03)';"
+                                        onmouseout="this.style.backgroundColor='#fe980f'; this.style.transform='scale(1)'">
                                         Lưu
                                     </button>
                                 </div>
@@ -678,7 +672,7 @@
         });
     });
 </script>
-// JavaScript để hover xổ menu tai khoan
+<!-- JavaScript để hover xổ menu tai khoan -->
 <script>
     document.querySelectorAll('li[style]').forEach(function (item) {
         item.addEventListener('mouseenter', function () {

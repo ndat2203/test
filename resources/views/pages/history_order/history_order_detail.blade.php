@@ -294,6 +294,7 @@
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
 								<li><a href="{{URL::to('/trang-chu')}}" class="active">Trang chủ</a></li>
+                                <li><a href="{{URL::to('/trang-chu')}}" >Giới thiệu</a></li>
 								<!-- <li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu">
                                         <li><a href="shop.html">Products</a></li>
@@ -361,13 +362,13 @@
     <section id="order-details" style="margin-bottom: 60px">
 
         <div class="container mb-5">
-            <div class="breadcrumbs mb-4">
-                <ol class="breadcrumb">
-                    <li><a href="{{ URL::to('/trang-chu') }}">Trang chủ</a></li>
-                    <li><a href="{{ URL::to('/history') }}">Lịch sử đơn hàng</a></li>
-                    <li class="active">Chi tiết đơn hàng</li>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb" style="background:none;">
+                    <li class="breadcrumb-item"><a href="{{url('/')}}">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="{{url('/history')}}">Lịch sử đơn hàng</a></li>
+                    <li class="breadcrumb-item active" style="border:none;" aria-current="page">Chi tiết đơn hàng</li>
                 </ol>
-            </div>
+            </nav>
             @foreach ($all_order as $order => $data_order)
                         <div class="order-detail-card p-4">
                             <h3 class="mb-4">Chi tiết đơn hàng #{{ $data_order->first()->order_code }}</h3>
@@ -642,7 +643,7 @@
     });
 
 </script>
-// JavaScript để hover xổ menu tai khoan
+<!-- JavaScript để hover xổ menu tai khoan -->
 <script>
     document.querySelectorAll('li[style]').forEach(function (item) {
         item.addEventListener('mouseenter', function () {

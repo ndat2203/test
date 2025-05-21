@@ -258,6 +258,7 @@
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
 								<li><a href="{{URL::to('/trang-chu')}}" class="active">Trang chủ</a></li>
+                                <li><a href="{{URL::to('/trang-chu')}}" >Giới thiệu</a></li>
 								<!-- <li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu">
                                         <li><a href="shop.html">Products</a></li>
@@ -411,12 +412,15 @@
                                                     @endif
 
                                                     <!-- Số lượng + nút -->
-                                                    <div style="display: flex; align-items: center; gap: 12px;">
-                                                        <label style="margin: 0; font-weight: 500;">Số lượng:</label>
-                                                        <input name="product_qty" type="number" min="1" max="{{$value->product_qty}}" value="1"
-                                                            style="width: 60px; padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px;"
-                                                            @if($value->product_qty == 0) style="background-color: #d3d3d3; color: #999;" disabled @endif>
-                                                        <input name="product_id" type="hidden" value="{{$value->product_id}}">
+                                                    <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+                                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                                            <label style="margin: 0; font-weight: 500;">Số lượng:</label>
+                                                            <input name="product_qty" type="number" min="1" max="{{$value->product_qty}}" value="1"
+                                                                style="width: 60px; padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px;"
+                                                                @if($value->product_qty == 0) style="background-color: #d3d3d3; color: #999;" disabled @endif>
+                                                            <input name="product_id" type="hidden" value="{{$value->product_id}}">
+                                                        </div>
+
                                                         <button type="submit"
                                                             style="background-color: #fe980f; color: #fff; border: none; padding: 8px 16px;
                                                                 border-radius: 4px; font-weight: 500; cursor: pointer; transition: all 0.3s ease;
@@ -429,6 +433,7 @@
                                                             <i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
                                                         </button>
                                                     </div>
+
                                                 </form>
 
 
@@ -478,23 +483,6 @@
                                                         Đọc Thêm
                                                     </button>
                                                 </div>
-
-                                                    <!-- <div class="tab-pane fade" id="companyprofile" >
-                                                        <div class="col-sm-3">
-                                                            <div class="product-image-wrapper">
-                                                                <div class="single-products">
-                                                                    <div class="productinfo text-center">
-                                                                        <img src="images/home/gallery1.jpg" alt="" />
-                                                                        <h2>$56</h2>
-                                                                        <p>Easy Polo Black Edition</p>
-                                                                        <button type="button" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                    </div> -->
-
 
 
                                                     <div class="tab-pane fade " id="reviews" >
@@ -567,7 +555,7 @@
                                                         "
                                                         onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'"
                                                         onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)'"
-                                                        onclick="window.location='{{URL::to('chi-tiet-san-pham/'.$value->product_slug)}}'">
+                                                        >
 
                                                             <div class="single-products">
                                                                 <div class="productinfo text-center" style="
@@ -577,31 +565,55 @@
                                                                     justify-content: space-between;
                                                                     height: 368px;
                                                                 ">
+                                                                <div style="position: relative;">
                                                                     <img src="{{URL::to('public/upload/product/'.$value->product_image)}}" alt="" style="
                                                                         width: 150px;
                                                                         height: auto;
                                                                         object-fit: contain;
                                                                         margin-bottom: 10px;
                                                                     " />
-                                                                    <h2 style="min-height: 40px; font-size: 20px; color: #FE980F;">
-                                                                        {{ number_format($value->product_price, 0, ',', '.') . ' VNĐ' }}
-                                                                    </h2>
+                                                                    @if (!empty($value->product_discount_price))
+                                                                        <span style="position: absolute; top: 10px; left: 10px; background-color: red; color: white; padding: 3px 8px; font-size: 12px; border-radius: 4px;">
+                                                                            Giảm giá
+                                                                        </span>
+                                                                    @endif
+                                                                </div>
+                                                                    @if (!empty($value->product_discount_price))
+                                                                        <h2 style="min-height: 40px; font-size: 20px; color: #FE980F;">
+                                                                            <span style="text-decoration: line-through; color: #999; font-size: 16px; margin-right: 10px;">
+                                                                                {{ number_format($value->product_price, 0, ',', '.') }} VNĐ
+                                                                            </span>
+                                                                            <span style="color: #fe980f; font-size: 18px;">
+                                                                                {{ number_format($value->product_discount_price, 0, ',', '.') }} VNĐ
+                                                                            </span>
+                                                                        </h2>
+                                                                    @else
+                                                                        <h2 style="color: #fe980f; font-size: 18px;">
+                                                                            {{ number_format($value->product_price, 0, ',', '.') }} VNĐ
+                                                                        </h2>
+                                                                    @endif
                                                                     <p style="min-height: 50px; text-align: center; color: #555;">
                                                                         {{ $value->product_name }}
                                                                     </p>
-                                                                    <a href="#" class="btn btn-default add-to-cart" style="
+                                                                    <input type="hidden" class="cart_product_id_{{ $value->product_id }}" value="{{ $value->product_id }}">
+                                                                    <input type="hidden" id="wishlist_productName{{$value->product_id}}" class="cart_product_name_{{ $value->product_id }}" value="{{ $value->product_name }}">
+                                                                    <input type="hidden" class="cart_product_image_{{ $value->product_id }}" value="{{ $value->product_image }}">
+                                                                    <input type="hidden" id="wishlish_productPrice{{$value->product_id}}" class="cart_product_price_{{ $value->product_id }}" value="{{ number_format($value->product_price, 0, ',', '.') }} VNĐ">
+                                                                    <input type="hidden"  class="cart_product_qty_{{ $value->product_id }}" value="1">
+                                                                    <button type="button" class="btn btn-default add-to-cart" data-id_product="{{ $value->product_id }}"
+                                                                        style="
                                                                         margin-top: auto;
                                                                         background-color: #f5f5ed;
                                                                         border: none;
                                                                         color: #444;
                                                                         transition: background 0.3s;
                                                                         border-radius: 24px;
-                                                                        padding: 10px 16px;
-                                                                    "
+                                                                        padding: 10px 16px;"
+
                                                                     onmouseenter="this.style.background='#e78c13'"
                                                                     onmouseleave="this.style.background='#f5f5ed'">
                                                                         <i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
-                                                                    </a>
+                                                                    </button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -623,7 +635,7 @@
                                                         "
                                                         onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'"
                                                         onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)'"
-                                                        onclick="window.location='{{URL::to('chi-tiet-san-pham/'.$value->product_slug)}}'">
+                                                        >
 
                                                             <div class="single-products">
                                                                 <div class="productinfo text-center" style="
@@ -631,33 +643,56 @@
                                                                     flex-direction: column;
                                                                     align-items: center;
                                                                     justify-content: space-between;
-                                                                    height: 368px;
-                                                                ">
-                                                                    <img src="{{URL::to('public/upload/product/'.$value->product_image)}}" alt="" style="
-                                                                        width: 150px;
-                                                                        height: auto;
-                                                                        object-fit: contain;
-                                                                        margin-bottom: 10px;
-                                                                    " />
-                                                                    <h2 style="min-height: 40px; font-size: 20px; color: #FE980F;">
-                                                                        {{ number_format($value->product_price, 0, ',', '.') . ' VNĐ' }}
-                                                                    </h2>
-                                                                    <p style="min-height: 50px; text-align: center; color: #555;">
-                                                                        {{ $value->product_name }}
-                                                                    </p>
-                                                                    <a href="#" class="btn btn-default add-to-cart" style="
-                                                                        margin-top: auto;
-                                                                        background-color: #f5f5ed;
-                                                                        border: none;
-                                                                        color: #444;
-                                                                        transition: background 0.3s;
-                                                                        border-radius: 24px;
-                                                                        padding: 10px 16px;
-                                                                    "
-                                                                    onmouseenter="this.style.background='#e78c13'"
-                                                                    onmouseleave="this.style.background='#f5f5ed'">
-                                                                        <i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
-                                                                    </a>
+                                                                    height: 368px;">
+                                                                        <div style="position: relative;">
+                                                                            <img src="{{URL::to('public/upload/product/'.$value->product_image)}}" alt="" style="
+                                                                                width: 150px;
+                                                                                height: auto;
+                                                                                object-fit: contain;
+                                                                                margin-bottom: 10px;
+                                                                            " />
+                                                                            @if (!empty($value->product_discount_price))
+                                                                                <span style="position: absolute; top: 10px; left: 10px; background-color: red; color: white; padding: 3px 8px; font-size: 12px; border-radius: 4px;">
+                                                                                    Giảm giá
+                                                                                </span>
+                                                                            @endif
+                                                                        </div>
+                                                                        @if (!empty($value->product_discount_price))
+                                                                            <h2 style="min-height: 40px; font-size: 20px; color: #FE980F;">
+                                                                                <span style="text-decoration: line-through; color: #999; font-size: 16px; margin-right: 10px;">
+                                                                                    {{ number_format($value->product_price, 0, ',', '.') }} VNĐ
+                                                                                </span>
+                                                                                <span style="color: #fe980f; font-size: 18px;">
+                                                                                    {{ number_format($value->product_discount_price, 0, ',', '.') }} VNĐ
+                                                                                </span>
+                                                                            </h2>
+                                                                        @else
+                                                                            <h2 style="color: #fe980f; font-size: 18px;">
+                                                                                {{ number_format($value->product_price, 0, ',', '.') }} VNĐ
+                                                                            </h2>
+                                                                        @endif
+                                                                        <p style="min-height: 50px; text-align: center; color: #555;">
+                                                                            {{ $value->product_name }}
+                                                                        </p>
+                                                                        <input type="hidden" class="cart_product_id_{{ $value->product_id }}" value="{{ $value->product_id }}">
+                                                                        <input type="hidden" id="wishlist_productName{{$value->product_id}}" class="cart_product_name_{{ $value->product_id }}" value="{{ $value->product_name }}">
+                                                                        <input type="hidden" class="cart_product_image_{{ $value->product_id }}" value="{{ $value->product_image }}">
+                                                                        <input type="hidden" id="wishlish_productPrice{{$value->product_id}}" class="cart_product_price_{{ $value->product_id }}" value="{{ number_format($value->product_price, 0, ',', '.') }} VNĐ">
+                                                                        <input type="hidden"  class="cart_product_qty_{{ $value->product_id }}" value="1">
+                                                                        <button type="button" class="btn btn-default add-to-cart" data-id_product="{{ $value->product_id }}"
+                                                                            style="
+                                                                            margin-top: auto;
+                                                                            background-color: #f5f5ed;
+                                                                            border: none;
+                                                                            color: #444;
+                                                                            transition: background 0.3s;
+                                                                            border-radius: 24px;
+                                                                            padding: 10px 16px;"
+
+                                                                        onmouseenter="this.style.background='#e78c13'"
+                                                                        onmouseleave="this.style.background='#f5f5ed'">
+                                                                            <i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
+                                                                        </button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -850,9 +885,73 @@
     <script src="{{asset('public/fontend/js/jquery.prettyPhoto.js')}}"></script>
     <script src="{{asset('public/fontend/js/main.js')}}"></script>
 
+    <!-- <script src="{{asset('public/fontend/js/sweetalert.js')}}"></script> -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
     <script src="{{asset('public/fontend/js/lightslider.js')}}"></script>
     <script src="{{asset('public/fontend/js/lightgallery-all.min.js')}}"></script>
     <script src="{{asset('public/fontend/js/prettify.js')}}"></script>
+    <!--Start of Fchat.vn-->
+    <script type="text/javascript" src="https://cdn.fchat.vn/assets/embed/webchat.js?id=6804c4b40967f4a48e03bc27" async="async"></script>
+<!--End of Fchat.vn-->
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.add-to-cart').click(function(){
+            var id = $(this).data('id_product'); // Lấy ID sản phẩm
+            var _token = $('input[name="_token"]').val();
+
+            $.ajax({
+                url: "{{ url('/save-cart') }}",
+                method: "POST",
+                data: {
+                    _token: _token,
+                    product_id: id,
+                    product_qty: 1
+                },
+                success: function(response){
+                    if (response.totalQuantity !== undefined) {
+                        $('.cart-count').text(response.totalQuantity);
+                    }
+                    swal({
+                        title: "Đã thêm sản phẩm vào giỏ hàng",
+                        text: "Bạn có thể mua hàng tiếp hoặc tới giỏ hàng để tiến hành thanh toán",
+                        icon: "success",
+                        timer: 1000,
+                        buttons: {
+                            cancel: "Xem tiếp",
+                            confirm: {
+                                text: "Đi đến giỏ hàng",
+                                value: true,
+                                visible: true,
+                                className: "btn-success"
+                            }
+                        }
+                    }).then((goToCart) => {
+                        if (goToCart) {
+                            window.location.href = "{{ url('/show-cart') }}";
+                        }
+                    });
+                },
+                error: function(response){
+                    swal("Lỗi!", response.responseJSON.error, "error");
+                }
+            });
+        });
+    });
+</script>
+<!-- JavaScript để hover xổ menu tai khoan -->
+    <script>
+       document.querySelectorAll('li[style]').forEach(function(item) {
+         item.addEventListener('mouseenter', function() {
+           let submenu = this.querySelector('ul');
+           if (submenu) submenu.style.display = 'block';
+         });
+         item.addEventListener('mouseleave', function() {
+           let submenu = this.querySelector('ul');
+           if (submenu) submenu.style.display = 'none';
+         });
+       });
+     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const tasteButtons = document.querySelectorAll('.taste-option');

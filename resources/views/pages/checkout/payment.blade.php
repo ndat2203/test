@@ -276,6 +276,7 @@
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
 								<li><a href="{{URL::to('/trang-chu')}}" class="active">Trang chủ</a></li>
+                                <li><a href="{{URL::to('/trang-chu')}}" >Giới thiệu</a></li>
 								<!-- <li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu">
                                         <li><a href="shop.html">Products</a></li>
@@ -342,19 +343,22 @@
 
 	<section id="cart_items">
 		<div class="container" style="margin-bottom: 50px;">
-			<div class="breadcrumbs">
-				<ol class="breadcrumb" style="margin-bottom:30px;">
-				  <li><a  href="{{URL::to('/trang-chu')}}">Trang chủ</a></li>
-                  <li><a href="{{ URL::to('/show-cart') }}">Giỏ hàng</a></li>
-				  <li class="active">Thanh toán giỏ hàng</li>
+            <nav aria-label="breadcrumb">
+				<ol class="breadcrumb" style="background:none;">
+                  <li class="breadcrumb-item"><a href="{{url('/')}}">Trang chủ</a></li>
+                  <li class="breadcrumb-item"><a href="{{url('/show-cart')}}">Giỏ hàng</a></li>
+                  @if(isset($fromCheckout) && $fromCheckout)
+                    <li class="breadcrumb-item"><a href="{{url('/checkout')}}">Địa chỉ giao hàng</a></li>
+                  @endif
+                  <li class="breadcrumb-item active" style="border:none;" aria-current="page">Thanh toán</li>
 				</ol>
-			</div><!--/breadcrums-->
+			</nav>
 
             <div class="row">
     <!-- Cột bên trái -->
     <div class="col-md-8">
         <!-- Địa chỉ giao hàng -->
-        <div class="panel" style="background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 20px;">
+        <div class="panel" style="position: relative; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 20px;">
             <h4 style="font-weight: bold; color: #333; margin-bottom: 15px;">Địa chỉ giao hàng</h4>
             <p style="margin: 0; font-weight: bold; color: #333;">{{ $get_customer->shipping_name }}</p>
             <p style="margin: 10px 0 0; color: #555;">
@@ -366,6 +370,70 @@
             <p style="margin: 5px 0 0; color: #555;">
                 <strong>Ghi chú:</strong> {{ $get_customer->shipping_note }}
             </p>
+            <button class="btn"
+                    style="
+                        position: absolute;
+                        top: 15px;
+                        right: 15px;
+                        background-color: #3498db;
+                        color: #fff;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 6px;
+                        font-weight: bold;
+                        font-size: 14px;
+                        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+                        transition: background-color 0.3s, transform 0.2s;
+                    "
+                    data-toggle="modal" data-target="#selectShippingModal"
+                    onmouseover="this.style.backgroundColor='#2980b9'"
+                    onmouseout="this.style.backgroundColor='#3498db'">
+                <i class="fa fa-map-marker" style="margin-right: 5px;"></i> Chọn địa chỉ khác
+            </button>
+        </div>
+        <!-- Modal chọn địa chỉ khác -->
+        <div class="modal fade" id="selectShippingModal" tabindex="-1" role="dialog" aria-labelledby="selectShippingLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="selectShippingLabel">Chọn địa chỉ giao hàng</h4>
+                    </div>
+                    <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                        @foreach($info_shipping as $key => $info)
+                            <div class="shipping-item" data-id="{{ $info->shipping_id }}" style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); margin-bottom: 15px; transition: transform 0.3s ease;">
+                                <div class="row">
+                                    <div class="col-md-6" style="margin-bottom: 10px;">
+                                        <p style="margin: 0; font-weight: bold; color: #333;">Họ tên:</p>
+                                        <p style="margin: 0 0 10px; color: #555;">{{ $info->shipping_name }}</p>
+
+                                        <p style="margin: 0; font-weight: bold; color: #333;">Số điện thoại:</p>
+                                        <p style="margin: 0 0 10px; color: #555;">{{ $info->shipping_phone }}</p>
+                                    </div>
+
+                                    <div class="col-md-6" style="margin-bottom: 10px;">
+                                        <p style="margin: 0; font-weight: bold; color: #333;">Địa chỉ giao hàng:</p>
+                                        <p style="margin: 0; color: #555;">{{ $info->shipping_address }}</p>
+                                    </div>
+                                </div>
+
+                                @if ($info->shipping_default)
+                                    <span class="shipping-default-label" style="color: #27ae60; font-weight: bold; display: inline-block; margin-top: 15px; font-size: 14px;">
+                                        [Địa chỉ mặc định]
+                                    </span>
+                                @else
+                                    <button onclick="setDefaultShipping({{ $info->shipping_id }})"
+                                        class="set-default-btn"
+                                        style="margin-top: 15px; padding: 10px 20px; background: #3498db; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; font-size: 14px; transition: background 0.3s ease;">
+                                        Chọn làm mặc định
+                                    </button>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+
+                </div>
+            </div>
         </div>
         <!-- Phương thức giao hàng -->
         <div class="panel" style="background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 20px;">
@@ -666,86 +734,11 @@
 
     <script src="https://www.paypalobjects.com/api/checkout.js"></script>
 
-    {{-- <script>
-        paypal.Button.render({
-            env: 'sandbox',
-            client: {
-                sandbox: 'AfQv6Nw7Og7RAQzWEw7QsajChgTloesvud83Mzp2Tf_p_45Tp_1Hi9K6ePZ4QfW9fm1E1ZbixVzyZ27U',
-                production: 'demo_production_client_id'
-            },
-            locale: 'en_US',
-            style: {
-                size: 'small',
-                color: 'gold',
-                shape: 'pill',
-            },
-            commit: true,
-
-            payment: function(data, actions) {
-                // Lấy lại total tại thời điểm người dùng click
-                let rawTotal = $('#total_amount').text(); // Ví dụ: "1.200.000 VNĐ"
-                let numericTotal = parseInt(rawTotal.replace(/[^\d]/g, '')) || 0; // Tránh NaN
-                let usdAmount = (numericTotal / 24000).toFixed(2); // Làm tròn 2 chữ số sau dấu .
-
-                return actions.payment.create({
-                    transactions: [{
-                        amount: {
-                            total: usdAmount,
-                            currency: 'USD'
-                        }
-                    }]
-                });
-            },
-
-            onAuthorize: function(data, actions) {
-                return actions.payment.execute().then(function() {
-                    window.alert('Cảm ơn bạn đã thanh toán!');
-                    // redirect hoặc xử lý sau khi thanh toán ở đây nếu cần
-                });
-            }
-        }, '#paypal-button');
-    </script> --}}
-    {{-- <script>
-        document.querySelector('.finallypaypal').addEventListener('click', function(e) {
-            e.preventDefault(); // Chặn submit mặc định nếu có
-
-            let paymentOption = document.querySelector('input[name="payment_option"]:checked').value;
-            let rawTotal = document.getElementById('total_amount').textContent;
-            let numericTotal = parseInt(rawTotal.replace(/[^\d]/g, '')); // Lấy số
-            let usdAmount = (numericTotal / 24000).toFixed(2); // Đổi sang USD
-
-            if (paymentOption === 'paypal') {
-                fetch("{{ route('processTransaction') }}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                    },
-                    body: JSON.stringify({
-                        amount: usdAmount
-                    })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.redirect_url) {
-                        window.location.href = data.redirect_url;
-                    } else {
-                        alert(data.message || "Có lỗi xảy ra.");
-                    }
-                });
-            } else {
-                // Với các phương thức khác, bạn có thể submit form hoặc xử lý tương ứng
-                // document.getElementById('checkout-form').submit();
-                alert("Đang xử lý phương thức: " + paymentOption);
-            }
-        });
-    </script> --}}
 
 
 </body>
 </html>
-
-// JavaScript để hover xổ menu tai khoan
+<!-- JavaScript để hover xổ menu tai khoan -->
 <script>
    document.querySelectorAll('li[style]').forEach(function(item) {
      item.addEventListener('mouseenter', function() {
@@ -758,6 +751,31 @@
      });
    });
  </script>
+ <script>
+    function setDefaultShipping(shippingId) {
+
+        $.ajax({
+            url: "{{ route('set-default-shipping') }}",
+            method: 'POST',
+            data: {
+                _token: "{{ csrf_token() }}",
+                shipping_id: shippingId
+            },
+            success: function(response) {
+                if(response.status === 'success') {
+                    $('#selectShippingModal').modal('hide');
+                    location.reload();
+
+                } else {
+                    alert('có lỗi xảy ra!');
+                }
+            },
+            error: function() {
+                toastr.error('Có lỗi xảy ra!');
+            }
+        });
+    }
+</script>
 <script>
     $(document).ready(function () {
         setTimeout(function () {

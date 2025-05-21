@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Taste;
-use Illuminate\Http\Request;
 use DB;
+use File;
+use Session;
+use Carbon\Carbon;
+use App\Models\Taste;
+use App\Models\Rating;
+use App\Models\Slider;
+use App\Models\Comment;
 use App\Models\Gallery;
 use App\Models\Product;
-use App\Models\Comment;
-use App\Models\Rating;
+use App\Models\brandProduct;
 use App\Models\categoryPost;
-use Session;
-use File;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 session_start();
 class productController extends Controller
@@ -47,6 +50,7 @@ class productController extends Controller
         $data['category_id'] = $request->product_category;
         $data['brand_id'] = $request->product_brand;
         $data['product_status'] = $request->product_status;
+        $data['product_date'] = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
 
         $path = 'public/upload/product/';
         $path_gal = 'public/upload/gallery/';
@@ -256,6 +260,48 @@ class productController extends Controller
         );
         return view('admin.images.file_browser')->with($data);
     }
+
+    public function manage_warehouse(){
+        $this->authLogin();
+        $all_product = DB::table('tbl_product')
+        ->join('tbl_category_product', 'tbl_category_product.category_id','=','tbl_product.category_id')
+        ->join('tbl_brand_product', 'tbl_brand_product.brand_id','=','tbl_product.brand_id')
+        ->join('product_imports', 'product_imports.product_id','=','tbl_product.product_id')
+
+        ->orderby('tbl_product.product_id','desc')
+        ->get();
+        $list_product = view('admin.warehouse.manage_warehouse')->with('all_product', $all_product );
+
+        return view('admin_layout')->with('admin.all_product', $list_product);
+    }
+
+    // nhap hang
+    public function import_product()
+    {
+        $products = DB::table('tbl_product')->get();
+        return view('admin.warehouse.import_general')->with('products', $products);
+    }
+    public function submit_import(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required|exists:tbl_product,product_id',
+            'import_qty' => 'required|integer|min:1',
+        ]);
+
+        // Cộng số lượng vào bảng sản phẩm
+        DB::table('tbl_product')->where('product_id', $request->product_id)
+            ->increment('product_qty', $request->import_qty);
+
+        // Lưu vào bảng nhập kho
+        DB::table('product_imports')->insert([
+            'product_id' => $request->product_id,
+            'import_qty' => $request->import_qty,
+            'import_date' => Carbon::now('Asia/Ho_Chi_Minh'),
+        ]);
+        toastr()->success('Nhập hàng thành công!');
+        return redirect('/import-product');
+    }
+
 // end admin
     public function detail_product(Request $request, $product_slug){
         $category_product = DB::table('tbl_category_product')->where('category_status','1')->orderby('category_id','desc')->get();
@@ -285,7 +331,7 @@ class productController extends Controller
 
         $gallery = Gallery::where('product_id', $product_id)->get();
 
-        // vị của sản phẩmphẩm
+        // vị của sản phẩm
         $product_taste = Product::with('taste')->findOrFail($product_id);
 
         //update product_view
@@ -335,11 +381,86 @@ class productController extends Controller
                                                 ->with('commentCount',$commentCount)
                                                 ->with('product_taste',$product_taste);
     }
+    public function list_product_by_type(Request $request)
+    {
+        $meta_desc = "Danh sách sản phẩm";
+        $meta_keywords = "Danh sách sản phẩm";
+        $meta_title = "Danh sách sản phẩm";
+        $url_canonical = $request->url();
+
+        $category_post = categoryPost::orderby('cate_post_id','desc')->where('cate_post_status','1')->get();
+        $slider = Slider::orderby('slider_id','desc')->where('slider_status','1')->take(4)->get();
+        $category_product = DB::table('tbl_category_product')
+                                ->where('category_status','1')
+                                ->orderby('category_parent','desc')
+                                ->orderBy('category_order','asc')->get();
+        $brand_product = brandProduct::withCount('products')
+                                ->where('brand_status', 1)
+                                ->orderby('brand_id','desc')
+                                ->get();
+
+        $type = $request->type;
+        $sort_by = $request->sort_by;
+        $min_price = $request->start_price;
+        $max_price = $request->end_price;
+        $query = DB::table('tbl_product')
+                    ->join('tbl_category_product', 'tbl_product.category_id', '=', 'tbl_category_product.category_id')
+                    ->where('tbl_product.product_status', 1);
+
+        // Nếu là giảm giá thì lọc trước
+        if ($type === 'giam-gia') {
+            $query->where('tbl_product.product_discount_price', '>', 0);
+        }
+        // Lọc theo khoảng giá
+        if ($min_price !== null && $max_price !== null) {
+            $query->whereBetween('tbl_product.product_price', [$min_price, $max_price])
+                  ->orderby('product_price', 'asc');
+        }
+
+        // Nếu không có sort_by thì áp dụng sắp xếp theo type
+        if (!$sort_by) {
+            switch ($type) {
+                case 'moi-nhat':
+                    $query->orderBy('tbl_product.product_id', 'DESC');
+                    break;
+                case 'xem-nhieu':
+                    $query->orderBy('tbl_product.product_view', 'DESC');
+                    break;
+                case 'mua-nhieu':
+                    $query->orderBy('tbl_product.product_sold', 'DESC');
+                    break;
+                case 'giam-gia':
+                    $query->orderBy('tbl_product.product_discount_price', 'DESC');
+                    break;
+                default:
+                    $query->orderBy('tbl_product.product_id', 'DESC');
+            }
+        }
+
+        // Sắp xếp nếu có yêu cầu
+        if ($sort_by == 'tang_dan') {
+            $query->orderBy('product_price', 'ASC');
+        } elseif ($sort_by == 'giam_dan') {
+            $query->orderBy('product_price', 'DESC');
+        } elseif ($sort_by == 'kytu_az') {
+            $query->orderBy('product_name', 'ASC');
+        } elseif ($sort_by == 'kytu_za') {
+            $query->orderBy('product_name', 'DESC');
+        }
+
+        $products = $query->paginate(9)->appends(request()->query());
+
+        return view('pages.product.list_product')->with(compact(
+            'products', 'type', 'meta_desc', 'meta_keywords', 'meta_title',
+            'url_canonical', 'category_post', 'slider', 'category_product', 'brand_product'
+        ));
+    }
+
     public function quickly_view(Request $request){
         $product_id = $request->product_id;
         $product = Product::find($product_id);
         $gallery = Gallery::where('product_id', $product_id)->get();  // Lấy danh sách hình ảnh từ bảng gallery
-
+        $product_taste = Product::with('taste')->findOrFail($product_id);
         // Xử lý dữ liệu Gallery để gửi về AJAX
         $output['product_gallery'] = '<ul id="imageGallery">';
         foreach ($gallery as $gal) {
@@ -353,6 +474,11 @@ class productController extends Controller
         $output['product_brand'] = $product->brand ? $product->brand->brand_name : 'Không có thương hiệu';
 
         // Tạo dữ liệu JSON gửi về AJAX
+        // kiểm tra tình trạngtrạng
+        $output['product_status'] = $product->product_qty == 0 ?
+        '<span style="color: red;">Hết hàng</span>' :
+        '<span style="color: green;">Còn hàng</span>';
+
         $output['product_name'] = $product->product_name;
         $output['product_slug'] = $product->product_slug;
         $output['product_id'] = $product->product_id;
@@ -362,12 +488,36 @@ class productController extends Controller
         } else {
             $output['product_price'] = number_format($product->product_price, 0, ',', '.') . ' VNĐ';
         }
+        // vị của sản phẩm
+        $output['product_taste'] = '';
+        if ($product_taste && $product_taste->taste->isNotEmpty()) {
+            $output['product_taste'] .= '
+                <div style="margin-bottom: 12px;">
+                    <label style="margin-bottom: 6px; display: block; font-weight: bold;">Loại:</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">';
+
+            foreach ($product_taste->taste as $taste) {
+                $is_disabled = ($product->product_qty == 0);
+                $disabled_attr = $is_disabled ? 'disabled' : '';
+                $style = 'padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; background: ' . ($is_disabled ? '#d3d3d3' : '#fff') . '; color: ' . ($is_disabled ? '#999' : '#000') . '; cursor: ' . ($is_disabled ? 'not-allowed' : 'pointer') . '; transition: 0.3s;';
+
+                $output['product_taste'] .= '
+                    <button type="button" class="taste-option" data-taste-id="'.$taste->taste_id.'" '.$disabled_attr.' style="'.$style.'">
+                        '.$taste->taste_name.'
+                    </button>';
+            }
+
+            $output['product_taste'] .= '
+                    </div>
+                    <input type="hidden" name="taste_id" id="selected-taste-id" required>
+                </div>';
+        }
 
         $output['product_desc'] = $product->product_desc;
         $output['product_content'] = $product->product_content;
         $output['product_image'] = '<p><img width="100%" src="public/upload/product/'.$product->product_image.'"></p>';
         $output['product_button'] = '
-            <button type="button" class="btn btn-default cart add-to-cart-quick" data-id_product="'.$product->product_id.'" style="margin-top:10px;border-radius:5px;">
+            <button type="button" class="btn btn-default cart add-to-cart-quick" data-id_product="'.$product->product_id.'" style="margin-top:10px;border-radius:5px;margin-left: 0px;">
                 <i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
             </button>
         ';
@@ -377,6 +527,7 @@ class productController extends Controller
             <input type="hidden" class="cart_product_image_'.$product->product_id.'" value="'.$product->product_image.'">
             <input type="hidden" class="cart_product_price_'.$product->product_id.'" value="'.$product->product_price.'">
             <input type="hidden" class="cart_product_qty_'.$product->product_id.'" value="1">
+            <input type="hidden" class="cart_product_taste_id_'.$product->product_id.'" value="" id="selected-taste-id">
         ';
         return response()->json($output);
     }

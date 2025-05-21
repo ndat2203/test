@@ -53,6 +53,7 @@ Route::get('/chi-tiet-san-pham/{product_slug}', [productController::class, 'deta
 Route::post('/quickly-view', [ProductController::class, 'quickly_view']);
 Route::post('/load-comment', [ProductController::class, 'load_comment']);
 Route::post('/sent-comment', [ProductController::class, 'sent_comment']);
+Route::get('/danh-sach-san-pham', [ProductController::class, 'list_product_by_type']);
 // Route::post('/reply-comment', [ProductController::class, 'storeReply']);
 // gio hang
 Route::post('/save-cart',[cartController::class,'save_cart']);
@@ -65,12 +66,18 @@ Route::post('/check-coupon', [CartController::class, 'check_coupon'])->name('che
 
 // đăng nhập
 Route::get('/login-checkout', [checkOutController::class, 'login_checkout']);
+Route::post('/add-customer', [checkOutController::class, 'add_customer']);
+Route::get('/verify-email', [checkOutController::class, 'verifyEmail']);
+
+// quên mật khẩu
 Route::get('/forget-password', [checkOutController::class, 'forget_password']);
 Route::post('/recover-password', [checkOutController::class, 'recover_password']);
 Route::get('/update-new-password', [checkOutController::class, 'update_new_password']);
 Route::post('/update-new-pass', [checkOutController::class, 'update_new_pass']);
+
 Route::post('/login-customer', [checkOutController::class, 'login_customer']);
 Route::get('/logout-checkout', [checkOutController::class, 'logout_checkout']);
+
 Route::get('/thong-tin-tai-khoan', [checkOutController::class, 'info_customer']);
 Route::get('/change-pass', [checkOutController::class, 'change_pass']);
 Route::post('/change-password-customer', [checkOutController::class, 'change_password_customer']);
@@ -78,7 +85,7 @@ Route::post('/change-password-customer', [checkOutController::class, 'change_pas
 // dia chi khach hang
 Route::get('/address-customer', [checkOutController::class, 'address_customer']);
 Route::post('/set-default-shipping', [checkOutController::class, 'setDefaultShipping'])->name('set-default-shipping');
-
+Route::post('/delete-shipping', [CheckoutController::class, 'deleteShipping'])->name('deleteShipping');
 // dang nhap bang google
 Route::get('/login-customer-google', [checkOutController::class, 'login_customer_google']);
 Route::get('/customer/google/callback', [checkOutController::class, 'callback_customer_google']);
@@ -86,7 +93,6 @@ Route::get('/customer/google/callback', [checkOutController::class, 'callback_cu
 Route::get('/login-customer-facebook', [checkOutController::class, 'login_customer_facebook']);
 Route::get('/customer/facebook/callback', [checkOutController::class, 'callback_customer_facebook']);
 // thanh toán
-Route::post('/add-customer', [checkOutController::class, 'add_customer']);
 Route::get('/checkout', [checkOutController::class, 'checkout']);
 Route::post('/save-checkout-customer', [checkOutController::class, 'save_checkout_customer']);
 Route::post('/save-shipping-address', [checkOutController::class, 'save_shipping_address']);
@@ -171,12 +177,16 @@ Route::post('/update-product/{product_id}',[productController::class,'update_pro
 
 Route::get('/delete-product/{product_id}',[productController::class,'delete_product']);
 Route::get('/all-product',[productController::class,'all_product']);
-
+Route::get('/manage-warehouse',[productController::class,'manage_warehouse']);
 Route::get('/unactive-product/{product_id}',[productController::class,'unactive_product']);
 Route::get('/active-product/{product_id}',[productController::class,'active_product']);
 
 Route::post('/uploads-ckeditor',[productController::class,'uploads_ckeditor']);
 Route::get('/file-browser',[productController::class,'file_browser']);
+
+// nhap hang
+Route::get('/import-product',[productController::class,'import_product']);
+Route::post('/submit-import',[productController::class,'submit_import']);
 
 // thêm vị cho sản phẩm
 Route::get('/add-taste', [productController::class, 'add_taste']);
