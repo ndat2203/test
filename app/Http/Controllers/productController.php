@@ -221,7 +221,7 @@ class productController extends Controller
         $comment->comment_product_id = $data['comment_product_id'];
         $comment->comment_parent = $data['comment_id'];
         $comment->comment_status = 0;
-        $comment->comment_username = 'Admin';
+        $comment->comment_username = 'FurryFriend';
         $comment->comment_rating = 0;
         $comment->save();
 
@@ -474,7 +474,7 @@ class productController extends Controller
         $output['product_brand'] = $product->brand ? $product->brand->brand_name : 'Không có thương hiệu';
 
         // Tạo dữ liệu JSON gửi về AJAX
-        // kiểm tra tình trạngtrạng
+        // kiểm tra tình trạng
         $output['product_status'] = $product->product_qty == 0 ?
         '<span style="color: red;">Hết hàng</span>' :
         '<span style="color: green;">Còn hàng</span>';

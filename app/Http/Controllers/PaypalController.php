@@ -67,7 +67,7 @@ class PaypalController extends Controller
             ]);
             app()->call('App\Http\Controllers\checkOutController@order_place', ['request' => $fakeRequest]);
 
-            return redirect()->route('history')->with('success','Thanh toán Paypal thành công!');
+            return redirect()->route('history');
         } else {
             return redirect()->route('payment')->with('error', $response['message'] ?? 'Lỗi thanh toán!');
         }

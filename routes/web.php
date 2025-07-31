@@ -32,7 +32,8 @@ use App\Http\Controllers\categoryProductController;
 // font-end
 Route::get('/', [HomeController::class,'index']);
 Route::get('/trang-chu', [HomeController::class, 'index'])->name('trang-chu');
-
+Route::get('/gioi-thieu', [HomeController::class, 'introduce']);
+Route::get('/lien-he', [HomeController::class, 'contact']);
 // tim kiem san pham
 Route::post('/tim-kiem', [HomeController::class, 'tim_kiem']);
 Route::post('/autocomplete-ajax', [HomeController::class, 'autocomplete_ajax'])->name('autocomplete_ajax');
@@ -52,6 +53,7 @@ Route::get('/bai-viet/{post_slug}', [postController::class, 'bai_viet']);
 Route::get('/chi-tiet-san-pham/{product_slug}', [productController::class, 'detail_product']);
 Route::post('/quickly-view', [ProductController::class, 'quickly_view']);
 Route::post('/load-comment', [ProductController::class, 'load_comment']);
+Route::post('/send-reply', [ProductController::class, 'sendReply'])->name('comment.reply');
 Route::post('/sent-comment', [ProductController::class, 'sent_comment']);
 Route::get('/danh-sach-san-pham', [ProductController::class, 'list_product_by_type']);
 // Route::post('/reply-comment', [ProductController::class, 'storeReply']);
@@ -65,9 +67,11 @@ Route::post('/update-cart', [CartController::class, 'update_cart'])->name('cart.
 Route::post('/check-coupon', [CartController::class, 'check_coupon'])->name('check.coupon');
 
 // đăng nhập
+Route::post('/login-customer', [checkOutController::class, 'login_customer']);
 Route::get('/login-checkout', [checkOutController::class, 'login_checkout']);
 Route::post('/add-customer', [checkOutController::class, 'add_customer']);
 Route::get('/verify-email', [checkOutController::class, 'verifyEmail']);
+Route::get('/logout-checkout', [checkOutController::class, 'logout_checkout']);
 
 // quên mật khẩu
 Route::get('/forget-password', [checkOutController::class, 'forget_password']);
@@ -75,9 +79,7 @@ Route::post('/recover-password', [checkOutController::class, 'recover_password']
 Route::get('/update-new-password', [checkOutController::class, 'update_new_password']);
 Route::post('/update-new-pass', [checkOutController::class, 'update_new_pass']);
 
-Route::post('/login-customer', [checkOutController::class, 'login_customer']);
-Route::get('/logout-checkout', [checkOutController::class, 'logout_checkout']);
-
+// thông tin khách hàng
 Route::get('/thong-tin-tai-khoan', [checkOutController::class, 'info_customer']);
 Route::get('/change-pass', [checkOutController::class, 'change_pass']);
 Route::post('/change-password-customer', [checkOutController::class, 'change_password_customer']);
@@ -86,12 +88,15 @@ Route::post('/change-password-customer', [checkOutController::class, 'change_pas
 Route::get('/address-customer', [checkOutController::class, 'address_customer']);
 Route::post('/set-default-shipping', [checkOutController::class, 'setDefaultShipping'])->name('set-default-shipping');
 Route::post('/delete-shipping', [CheckoutController::class, 'deleteShipping'])->name('deleteShipping');
+
 // dang nhap bang google
 Route::get('/login-customer-google', [checkOutController::class, 'login_customer_google']);
 Route::get('/customer/google/callback', [checkOutController::class, 'callback_customer_google']);
+
 // dang nhap bang facebook
 Route::get('/login-customer-facebook', [checkOutController::class, 'login_customer_facebook']);
 Route::get('/customer/facebook/callback', [checkOutController::class, 'callback_customer_facebook']);
+
 // thanh toán
 Route::get('/checkout', [checkOutController::class, 'checkout']);
 Route::post('/save-checkout-customer', [checkOutController::class, 'save_checkout_customer']);

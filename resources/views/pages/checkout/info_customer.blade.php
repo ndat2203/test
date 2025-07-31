@@ -300,7 +300,7 @@
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
 								<li><a href="{{URL::to('/trang-chu')}}" class="active">Trang chủ</a></li>
-                                <li><a href="{{URL::to('/trang-chu')}}">Giới thiệu</a></li>
+                                <li><a href="{{URL::to('/gioi-thieu')}}">Giới thiệu</a></li>
 								<li class="dropdown"><a href="#">Tin tức<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu" style="
                                         background-color: #ffffff;
@@ -406,18 +406,20 @@
                             <div class="row" style="margin-bottom: 20px;">
                                 <div class="col-md-6" style="margin-bottom: 15px;">
                                     <p style="margin: 0; font-weight: bold;">Họ tên:</p>
-                                    <p style="margin: 0 0 10px;">{{ $info_shipping->customer->customer_name }}</p>
+                                    <p style="margin: 0 0 10px;">
+                                        {{ session('customer_name', 'Khách hàng chưa đăng ký thông tin.') }}
+                                    </p>
 
                                     <p style="margin: 0; font-weight: bold;">Email:</p>
-                                    <p style="margin: 0 0 10px;">{{ $info_shipping->shipping_email }}</p>
+                                    <p style="margin: 0 0 10px;">{{ $info_shipping->shipping_email ?? 'Khách hàng chưa đăng ký thông tin.' }}</p>
 
                                     <p style="margin: 0; font-weight: bold;">Số điện thoại:</p>
-                                    <p style="margin: 0;">{{ $info_shipping->shipping_phone }}</p>
+                                    <p style="margin: 0;">{{ $info_shipping->shipping_phone ?? 'Khách hàng chưa đăng ký thông tin.' }}</p>
                                 </div>
 
                                 <div class="col-md-6" style="margin-bottom: 15px;">
                                     <p style="margin: 0; font-weight: bold;">Địa chỉ giao hàng:</p>
-                                    <p style="margin: 0 0 10px;">{{ $info_shipping->shipping_address }}</p>
+                                    <p style="margin: 0 0 10px;">{{ $info_shipping->shipping_address ?? 'Khách hàng chưa đăng ký thông tin.' }}</p>
 
                                     <p style="margin: 0; font-weight: bold;">Ngày tạo tài khoản:</p>
                                     <p style="margin: 0;">{{ date('d/m/Y', strtotime($info_shipping->customer->created_at ?? now())) }}</p>

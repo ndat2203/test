@@ -22,6 +22,8 @@
     <link href="{{asset('public/fontend/css/lightgallery.min.css')}}" rel="stylesheet">
     <link href="{{asset('public/fontend/css/lightslider.css')}}" rel="stylesheet">
     <link href="{{asset('public/fontend/css/prettify.css')}}" rel="stylesheet">
+    <link href="{{asset('public/fontend/css/chatbot.css')}}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <!--[if lt IE 9]>
     <script src="js/html5shiv.js"></script>
     <script src="js/respond.min.js"></script>
@@ -875,9 +877,12 @@
 		</div>
 
 	</footer><!--/Footer-->
+    <!--Start of Fchat.vn-->
+    <script type="text/javascript" src="https://cdn.fchat.vn/assets/embed/webchat.js?id=683abd6c910a1412100f1789" async="async"></script>
+    <!--End of Fchat.vn-->
 
-
-
+    <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
+    <script src="{{asset('public/fontend/js/chatbot.js')}}"></script>
     <script src="{{asset('public/fontend/js/jquery.js')}}"></script>
 	<script src="{{asset('public/fontend/js/bootstrap.min.js')}}"></script>
 	<script src="{{asset('public/fontend/js/jquery.scrollUp.min.js')}}"></script>

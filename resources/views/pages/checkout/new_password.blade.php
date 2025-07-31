@@ -175,8 +175,8 @@
 					<div class="col-sm-6">
 						<div class="contactinfo">
 							<ul class="nav nav-pills">
-								<li><a href="#"><i class="fa fa-phone"></i> +2 95 01 88 821</a></li>
-								<li><a href="#"><i class="fa fa-envelope"></i> info@domain.com</a></li>
+								<li><a href="#"><i class="fa fa-phone"></i> 0867584717</a></li>
+								<li><a href="#"><i class="fa fa-envelope"></i> furryfriend@gmail.com</a></li>
 							</ul>
 						</div>
 					</div>
@@ -211,7 +211,6 @@
 					<div class="col-sm-8">
 						<div class="shop-menu pull-right">
 							<ul class="nav navbar-nav">
-								<li><a href="#"><i class="fa fa-user"></i>Tài khoản</a></li>
 								<li><a href="#"><i class="fa-solid fa-heart"></i> Danh sách yêu thích</a></li>
 								<li><a href="{{URL::to('/show-cart')}}"><i class="fa fa-shopping-cart"></i> Giỏ hàng</a></li>
                                 @php
@@ -247,6 +246,7 @@
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
 								<li><a href="{{URL::to('/trang-chu')}}" class="active">Trang chủ</a></li>
+                                <li><a href="{{URL::to('/trang-chu')}}">Giới thiệu</a></li>
 								<!-- <li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu">
                                         <li><a href="shop.html">Products</a></li>

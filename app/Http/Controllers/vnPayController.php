@@ -17,7 +17,7 @@ class vnPayController extends Controller
         date_default_timezone_set('Asia/Ho_Chi_Minh');
 
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        $vnp_Returnurl = "http://localhost/DoAn/DoAn/vnpay_return";
+        $vnp_Returnurl = "http://localhost/DoAn/vnpay_return";
         $vnp_TmnCode = "IS3BFJKA";//Mã website tại VNPAY
         $vnp_HashSecret = "EOL7XDHX1OKHA1WBLMT71BFAJGB2YBTM"; //Chuỗi bí mật
 

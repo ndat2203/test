@@ -213,8 +213,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 </li>
                 <li class="sub-menu">
                     <a href="javascript:;">
-                       <i class="fa-solid fa-warehouse"></i>
-                        <span>Kho</span>
+                        <i class="fa-solid fa-warehouse"></i>
+                        <span style="color: red">Kho</span>
                     </a>
                     <ul class="sub">
 						<li><a href="{{URL::to('/manage-warehouse')}}">Quản lý tồn kho</a></li>
@@ -365,43 +365,56 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 </script>
 <script>
-    $(document).on('change', '.order-status-select', function () {
-        var orderId = $(this).data('order-id');
-        var status = $(this).val();
-        var token = '{{ csrf_token() }}';
+    let previousStatus = null;
 
-        $.ajax({
-            url: '{{ route("order.updateStatus") }}',
-            type: 'POST',
-            data: {
-                _token: token,
-                order_id: orderId,
-                order_status: status
-            },
-            success: function (response) {
-                if (response.success) {
-                    swal({
-                        title: "Thành công!",
-                        text: response.message,
-                        icon: "success",
-                        timer: 1500, // Tự động đóng sau 3 giây
-                        buttons: false, // Tắt nút "OK"
-                    });
-                } else {
-                    swal({
-                        title: "Thất bại!",
-                        text: "Cập nhật thất bại",
-                        icon: "error",
-                        timer: 1500, // Tự động đóng sau 3 giây
-                        buttons: false, // Tắt nút "OK"
-                    });
-                }
-            },
-            error: function () {
-                alert('Có lỗi xảy ra!');
+// Bắt đầu khi select box được focus, lưu trạng thái hiện tại
+$(document).on('focus', '.order-status-select', function () {
+    previousStatus = $(this).val();
+});
+
+// Khi thay đổi trạng thái
+$(document).on('change', '.order-status-select', function () {
+    var $select = $(this);
+    var orderId = $select.data('order-id');
+    var status = $select.val();
+    var token = '{{ csrf_token() }}';
+
+    $.ajax({
+        url: '{{ route("order.updateStatus") }}',
+        type: 'POST',
+        data: {
+            _token: token,
+            order_id: orderId,
+            order_status: status
+        },
+        success: function (response) {
+            if (response.success) {
+                swal({
+                    title: "Thành công!",
+                    text: response.message,
+                    icon: "success",
+                    timer: 1500,
+                    buttons: false,
+                });
+            } else {
+                // Cập nhật lại giá trị cũ
+                $select.val(previousStatus);
+                swal({
+                    title: "Thất bại!",
+                    text: response.message,
+                    icon: "error",
+                    timer: 1500,
+                    buttons: false,
+                });
             }
-        });
+        },
+        error: function () {
+            $select.val(previousStatus); // Lỗi hệ thống → cũng revert lại
+            alert('Có lỗi xảy ra!');
+        }
     });
+});
+
 </script>
 <script>
 $(document).ready(function() {

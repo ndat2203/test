@@ -52,6 +52,8 @@ class checkOutController extends Controller
                                   ->where('customer_id', Session::get('customer_id'))
                                   ->orderBy('shipping_id', 'asc') // Cũ nhất trước
                                   ->first();
+        $customer = Customer::where('customer_id', Session::get('customer_id'))
+                            ->first();
 
         $city =  City::orderby('matp','desc')->get();
         $meta_desc = "Thông tin tài khoản";
@@ -64,6 +66,7 @@ class checkOutController extends Controller
                                                         ->with('url_canonical',$url_canonical)
                                                         ->with('category_post', $category_post)
                                                         ->with('info_shipping', $info_shipping)
+                                                        ->with('customer', $customer)
                                                         ->with('city', $city);
     }
     public function address_customer(Request $request){
@@ -516,111 +519,140 @@ class checkOutController extends Controller
     return $defaultShipping ? redirect('/payment') : redirect('/checkout');
 }
 
-    public function order_place(Request $request){
-        $shipping_method = $request->shipping_method;
+    public function order_place(Request $request)
+{
+    $customer_id = Session::get('customer_id');
+    if (!$customer_id) {
+        toastr()->error('Không thể đặt hàng vì thiếu thông tin khách hàng.');
+        return redirect()->back();
+    }
 
-        // them vao bang payment
-        $data = array();
-        $payment_method = strtolower(($request->payment_option));
-        $data['payment_method'] = $payment_method;
-        if (in_array($payment_method, ['momo', 'vnpay', 'paypal'])) {
-            $data['payment_status'] = 'Đã thanh toán';
-        } else {
-            $data['payment_status'] = 'Đang chờ xử lý!';
-        }
-        $payment_id = DB::table('tbl_payment')->insertGetId($data);
+    $shipping_method = $request->shipping_method;
 
-        // lay ma giam gia
-        $counpon_session = Session::get('counpon');
-        $counpon_percent = 0;
-        if (!empty($counpon_session)) {
-            $counpon_percent = $counpon_session[0]['counpon_percent']; // lấy phần trăm giảm
-        }
-        // tinh tong tien thanh toan
-        $content = Cart::getContent();
-        $subtotal = 0;
-        $shipping_id = Shipping::where('customer_id', Session::get('customer_id'))->value('shipping_id');
-        foreach ($content as $value) {
-            $subtotal += $value->price * $value->quantity;
-        }
-        $vat = $subtotal * 0.1;
-        if ($shipping_method === 'store') {
-            $fee_ship = 0;
-        }else{
-            $shipping_info = Shipping::find($shipping_id);
+    // Kiểm tra giỏ hàng
+    $content = Cart::getContent();
+    if ($content->isEmpty()) {
+        toastr()->error('Giỏ hàng đang trống.');
+        return redirect()->back();
+    }
+
+    // Thêm vào bảng payment
+    $data = [];
+    $payment_method = strtolower($request->payment_option);
+    $data['payment_method'] = $payment_method;
+    if (in_array($payment_method, ['momo', 'vnpay', 'thanh toán bằng paypal'])) {
+        $data['payment_status'] = 'Đã thanh toán';
+    } else {
+        $data['payment_status'] = 'Đang chờ xử lý!';
+    }
+    $payment_id = DB::table('tbl_payment')->insertGetId($data);
+
+    // Lấy mã giảm giá
+    $counpon_session = Session::get('counpon');
+    $counpon_percent = 0;
+    if (!empty($counpon_session)) {
+        $counpon_percent = $counpon_session[0]['counpon_percent']; // lấy phần trăm giảm
+    }
+
+    // Tính tổng tiền
+    $subtotal = 0;
+    foreach ($content as $value) {
+        $subtotal += $value->price * $value->quantity;
+    }
+    $vat = $subtotal * 0.1;
+
+    // Lấy shipping_id theo customer_id
+    $shipping_id = Shipping::where('customer_id', $customer_id)->value('shipping_id');
+
+    if ($shipping_method !== 'store' && !$shipping_id) {
+        toastr()->error('Bạn chưa thêm địa chỉ giao hàng.');
+        return redirect()->back();
+    }
+
+    if ($shipping_method === 'store') {
+        $fee_ship = 0;
+    } else {
+        $shipping_info = Shipping::find($shipping_id);
+        if ($shipping_info) {
             $fee_ship = DB::table('tbl_fee_ship')
                 ->where('fee_matp', $shipping_info->shipping_matp)
                 ->where('fee_maqh', $shipping_info->shipping_maqh)
                 ->where('fee_xaid', $shipping_info->shipping_xaid)
                 ->value('fee_ship') ?? 0;
+        } else {
+            $fee_ship = 0; // xử lý khi không tìm thấy địa chỉ
+        }
+    }
+
+    $order_total = $subtotal + $vat + $fee_ship - $counpon_percent;
+
+    // Thêm vào bảng order
+    $order_date = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
+    $checkout_code = substr(md5(microtime()), rand(0, 26), 5);
+
+    $order_data = [
+        'customer_id' => $customer_id,
+        'shipping_id' => $shipping_id,
+        'payment_id' => $payment_id,
+        'order_code' => $checkout_code,
+        'order_total' => $order_total,
+        'order_status' => 'Chờ xử lý',
+        'created_at' => now(),
+        'order_date' => $order_date,
+        'shipping_method' => $shipping_method,
+        'is_reported' => false,
+    ];
+
+    $order_id = DB::table('tbl_order')->insertGetId($order_data);
+
+    // Cập nhật lại payment với order_id
+    DB::table('tbl_payment')->where('payment_id', $payment_id)->update([
+        'order_id' => $order_id
+    ]);
+
+    // Thêm vào bảng order_detail
+    foreach ($content as $value) {
+        $order_detail_data = [
+            'order_id' => $order_id,
+            'product_id' => $value->id,
+            'product_name' => $value->name,
+            'product_price' => $value->price,
+            'product_sales_quantity' => $value->quantity,
+            'product_counpon_percent' => (int)$counpon_percent,
+        ];
+
+        // Cập nhật số lượng sản phẩm trong kho
+        $product = Product::find($value->id);
+        if ($product && $product->product_qty >= $value->quantity) {
+            $product->product_qty -= $value->quantity;
+            $product->save();
+        } else {
+            toastr()->error('Sản phẩm ' . $value->name . ' không đủ trong kho');
+            return redirect()->back();
         }
 
-        $order_total = $subtotal + $vat + $fee_ship - $counpon_percent;
+        DB::table('tbl_order_detail')->insert($order_detail_data);
+    }
 
+    // Lấy thông tin khách hàng để gửi mail
+    $customer = Customer::find($customer_id);
+    if (!$customer) {
+        toastr()->error('Không tìm thấy thông tin khách hàng.');
+        return redirect()->back();
+    }
 
-        // them vao bang order
-        $order_date = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
-        $checkout_code = substr(md5(microtime()),rand(0,26),5);
-        $order_data = array();
-        $order_data['customer_id'] = Session::get('customer_id');
-
-        $order_data['shipping_id'] = $shipping_id;
-        $order_data['payment_id'] = $payment_id;
-        $order_data['order_code'] = $checkout_code;
-        $order_data['order_total'] = $order_total;
-        $order_data['order_status'] ='Chờ xử lý';
-        $order_data['created_at'] = now();
-        $order_data['order_date'] = $order_date;
-        $order_data['shipping_method'] = $shipping_method;
-        $order_data['is_reported'] = false;
-        $order_id = DB::table('tbl_order')->insertGetId($order_data);
-        // Cập nhật lại payment với order_id
-        DB::table('tbl_payment')->where('payment_id', $payment_id)->update([
-            'order_id' => $order_id
-        ]);
-
-        // them vao bang order_detail
-
-        foreach($content as $value){
-            $order_detail_data['order_id'] = $order_id;
-            $order_detail_data['product_id'] = $value->id;
-            $order_detail_data['product_name'] = $value->name;
-            $order_detail_data['product_price'] = $value->price;
-            $order_detail_data['product_sales_quantity'] = $value->quantity;
-            $order_detail_data['product_counpon_percent'] = (int)$counpon_percent;
-
-            // Cập nhật số lượng sản phẩm trong kho
-            $product = Product::find($value->id);
-            if ($product && $product->product_qty >= $value->quantity) {
-                // Trừ số lượng sản phẩm trong kho
-                $product->product_qty -= $value->quantity;
-                $product->save();
-            } else {
-                // Nếu số lượng sản phẩm không đủ, bạn có thể xử lý lỗi ở đây
-                toastr()->error('Sản phẩm ' . $value->name . ' không đủ trong kho');
-                return redirect()->back();
-            }
-            $order_detail_id = DB::table('tbl_order_detail')->insertGetId($order_detail_data);
-        }
-
-        $now = Carbon::now('Asia/Ho_Chi_Minh')->format('d-m-Y');
-        $title_mail = "Đơn hàng từ FurryFriend";
-        $customer = Customer::find(Session::get('customer_id'));
-        $data['email'][] = $customer->customer_email;
-        $all_order = DB::table('tbl_order')
+    // Lấy dữ liệu order để gửi mail
+    $all_order = DB::table('tbl_order')
         ->join('tbl_customer', 'tbl_customer.customer_id', '=', 'tbl_order.customer_id')
         ->join('tbl_shipping', 'tbl_shipping.shipping_id', '=', 'tbl_order.shipping_id')
-        ->join('tbl_order_detail','tbl_order_detail.order_id','=','tbl_order.order_id')
+        ->join('tbl_order_detail', 'tbl_order_detail.order_id', '=', 'tbl_order.order_id')
         ->join('tbl_product', 'tbl_product.product_id', '=', 'tbl_order_detail.product_id')
         ->join('tbl_payment', 'tbl_payment.payment_id', '=', 'tbl_order.payment_id')
-
-        // JOIN thêm phí ship
-        ->leftJoin('tbl_fee_ship', function($join) {
+        ->leftJoin('tbl_fee_ship', function ($join) {
             $join->on('tbl_fee_ship.fee_matp', '=', 'tbl_shipping.shipping_matp')
-                 ->on('tbl_fee_ship.fee_maqh', '=', 'tbl_shipping.shipping_maqh')
-                 ->on('tbl_fee_ship.fee_xaid', '=', 'tbl_shipping.shipping_xaid');
+                ->on('tbl_fee_ship.fee_maqh', '=', 'tbl_shipping.shipping_maqh')
+                ->on('tbl_fee_ship.fee_xaid', '=', 'tbl_shipping.shipping_xaid');
         })
-
         ->select(
             'tbl_order.*',
             'tbl_customer.customer_name',
@@ -630,7 +662,7 @@ class checkOutController extends Controller
             'tbl_shipping.shipping_matp',
             'tbl_shipping.shipping_maqh',
             'tbl_shipping.shipping_xaid',
-            'tbl_fee_ship.fee_ship', // << Lấy phí ship tại đây
+            'tbl_fee_ship.fee_ship',
             'tbl_order.created_at as order_created_at',
             'tbl_order_detail.product_name',
             'tbl_order_detail.product_price',
@@ -639,39 +671,46 @@ class checkOutController extends Controller
             'tbl_product.product_image',
             'tbl_payment.*'
         )
-        ->select( /* như cũ */ )
         ->where('tbl_order.order_code', $checkout_code)
         ->get();
-        foreach($content as $val){
-            $cart_array[] = array(
-                'product_name' => $val->name,
-                'product_price' => $val->price,
-                'product_sales_quantity' => $val->quantity
-            );
-        }
-        $order_info = $all_order->first();
-        $data_mail = array(
-            'order_code' => $checkout_code,
-            'customer_name' => $order_info->customer_name,
-            'payment_method' => $order_info->payment_method,
-            'fee_ship' => $order_info->fee_ship,
-            'counpon_percent' => $counpon_percent,
-            'shipping_address' => $order_info->shipping_address,
-            'shipping_phone' => $order_info->shipping_phone
-        );
 
-
-        Mail::send('pages.mail.mail_order',['data' => $data_mail,'cart' => $cart_array],function($message) use($title_mail,$data){
-            $message->to($data['email'])->subject($title_mail);
-            $message->from($data['email'],$title_mail);
-        });
-
-
-        toastr()->success('Thanh toán thành công');
-        Cart::clear();
-        Session::forget('counpon');
-        return redirect('/history');
+    // Chuẩn bị mảng sản phẩm để gửi mail
+    $cart_array = [];
+    foreach ($content as $val) {
+        $cart_array[] = [
+            'product_name' => $val->name,
+            'product_price' => $val->price,
+            'product_sales_quantity' => $val->quantity
+        ];
     }
+
+    $order_info = $all_order->first();
+
+    $data_mail = [
+        'order_code' => $checkout_code,
+        'customer_name' => $order_info->customer_name,
+        'payment_method' => $order_info->payment_method,
+        'fee_ship' => $order_info->fee_ship,
+        'counpon_percent' => $counpon_percent,
+        'shipping_address' => $order_info->shipping_address,
+        'shipping_phone' => $order_info->shipping_phone
+    ];
+
+    $title_mail = "Đơn hàng từ FurryFriend";
+    $data = ['email' => [$customer->customer_email]];
+
+    Mail::send('pages.mail.mail_order', ['data' => $data_mail, 'cart' => $cart_array], function ($message) use ($title_mail, $data) {
+        $message->to($data['email'])->subject($title_mail);
+        $message->from($data['email'], $title_mail);
+    });
+
+    toastr()->success('Thanh toán thành công');
+    Cart::clear();
+    Session::forget('counpon');
+
+    return redirect('/history');
+}
+
 
     public function history(Request $request){
         if(!Session::get('customer_id')){

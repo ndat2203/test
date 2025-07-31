@@ -12,10 +12,14 @@
     <link rel="icon" type="image/x-icon" href="">
     <link rel="icon" href="{{asset('public/fontend/images/furryFriend.png')}}" type="image/gif" sizes="16x16">
      <!-- End Seo meta -->
+
     <title>{{$meta_title}}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="{{asset('public/fontend/css/bootstrap.min.css')}}" rel="stylesheet">
     <link href="{{asset('public/fontend/css/font-awesome.min.css')}}" rel="stylesheet">
     <link href="{{asset('public/fontend/css/prettyPhoto.css')}}" rel="stylesheet">
+    <link href="{{asset('public/fontend/css/style.css')}}" rel="stylesheet">
+    <link href="{{asset('public/fontend/css/chatbot.css')}}" rel="stylesheet">
     <link href="{{asset('public/fontend/css/price-range.css')}}" rel="stylesheet">
     <link href="{{asset('public/fontend/css/animate.css')}}" rel="stylesheet">
     <link href="{{asset('public/fontend/css/main.css')}}" rel="stylesheet">
@@ -378,7 +382,7 @@
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
 								<li><a href="{{URL::to('/trang-chu')}}" class="active">Trang chủ</a></li>
-                                <li><a href="{{URL::to('/trang-chu')}}" >Giới thiệu</a></li>
+                                <li><a href="{{URL::to('/gioi-thieu')}}" >Giới thiệu</a></li>
 								<!-- <li class="dropdown"><a href="#">Sản phẩm<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu">
                                         <li><a href="shop.html">Products</a></li>
@@ -422,7 +426,7 @@
 
                                 </li>
 								<!-- <li><a href="404.html">404</a></li> -->
-								<li><a href="contact-us.html">Liên hệ</a></li>
+								<li><a href="{{URL::to('/lien-he')}}">Liên hệ</a></li>
 							</ul>
 						</div>
 					</div>
@@ -567,7 +571,51 @@
 			</div>
 		</div>
 	</section>
+    <div>
+        <div class="chatbot-popup">
+            <!-- chatbot header -->
+            <div class="chat-header">
+                <div class="header-info">
+                    <svg class="chatbot-logo" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 1024 1024">
+                        <path d="M738.3 287.6H285.7c-59 0-106.8 47.8-106.8 106.8v303.1c0 59 47.8 106.8 106.8 106.8h81.5v111.1c0 .7.8 1.1 1.4.7l166.9-110.6 41.8-.8h117.4l43.6-.4c59 0 106.8-47.8 106.8-106.8V394.5c0-59-47.8-106.9-106.8-106.9zM351.7 448.2c0-29.5 23.9-53.5 53.5-53.5s53.5 23.9 53.5 53.5-23.9 53.5-53.5 53.5-53.5-23.9-53.5-53.5zm157.9 267.1c-67.8 0-123.8-47.5-132.3-109h264.6c-8.6 61.5-64.5 109-132.3 109zm110-213.7c-29.5 0-53.5-23.9-53.5-53.5s23.9-53.5 53.5-53.5 53.5 23.9 53.5 53.5-23.9 53.5-53.5 53.5zM867.2 644.5V453.1h26.5c19.4 0 35.1 15.7 35.1 35.1v121.1c0 19.4-15.7 35.1-35.1 35.1h-26.5zM95.2 609.4V488.2c0-19.4 15.7-35.1 35.1-35.1h26.5v191.3h-26.5c-19.4 0-35.1-15.7-35.1-35.1zM561.5 149.6c0 23.4-15.6 43.3-36.9 49.7v44.9h-30v-44.9c-21.4-6.5-36.9-26.3-36.9-49.7 0-28.6 23.3-51.9 51.9-51.9s51.9 23.3 51.9 51.9z"></path>
+                    </svg>
+                    <h2 class="logo-text">Chatbot</h2>
+                </div>
+                <button id="close-chatbot" class="material-symbols-outlined">close</button>
+            </div>
+            <!-- Chatbot body-->
+            <div class="chat-body">
+                <div class="message bot-message">
+                    <svg class="bot-avatar" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 1024 1024">
+                        <path d="M738.3 287.6H285.7c-59 0-106.8 47.8-106.8 106.8v303.1c0 59 47.8 106.8 106.8 106.8h81.5v111.1c0 .7.8 1.1 1.4.7l166.9-110.6 41.8-.8h117.4l43.6-.4c59 0 106.8-47.8 106.8-106.8V394.5c0-59-47.8-106.9-106.8-106.9zM351.7 448.2c0-29.5 23.9-53.5 53.5-53.5s53.5 23.9 53.5 53.5-23.9 53.5-53.5 53.5-53.5-23.9-53.5-53.5zm157.9 267.1c-67.8 0-123.8-47.5-132.3-109h264.6c-8.6 61.5-64.5 109-132.3 109zm110-213.7c-29.5 0-53.5-23.9-53.5-53.5s23.9-53.5 53.5-53.5 53.5 23.9 53.5 53.5-23.9 53.5-53.5 53.5zM867.2 644.5V453.1h26.5c19.4 0 35.1 15.7 35.1 35.1v121.1c0 19.4-15.7 35.1-35.1 35.1h-26.5zM95.2 609.4V488.2c0-19.4 15.7-35.1 35.1-35.1h26.5v191.3h-26.5c-19.4 0-35.1-15.7-35.1-35.1zM561.5 149.6c0 23.4-15.6 43.3-36.9 49.7v44.9h-30v-44.9c-21.4-6.5-36.9-26.3-36.9-49.7 0-28.6 23.3-51.9 51.9-51.9s51.9 23.3 51.9 51.9z"></path>
+                    </svg>
+                    <div class="message-text">Xin chào! 👋<br>Bạn cần mình giúp gì hôm nay?</div>
+                </div>
+            </div>
+             <!-- Chatbot footer-->
+            <div class="chat-footer" style="padding: 15px 15px 15px;">
+                <form action="#" class="chat-form">
+                    <textarea name="" id="" placeholder="Nhập tin nhắn..." class="message-input" required >
 
+                    </textarea>
+                    <div class="chat-controls">
+                        <button type="button" id="emoji-picker" class="material-symbols-outlined">sentiment_satisfied</button>
+                        <div class="file-upload-wrapper">
+                            <input type="file" accept="images/*" id="file-input" style="display: none;" hidden >
+                            <img src="#">
+                            <button type="button" id="file-upload" class="material-symbols-outlined">attach_file</button>
+                            <button type="button" id="file-cancel" class="material-symbols-outlined">close</button>
+                        </div>
+                        <button id="send-message" type="submit" class="material-symbols-outlined">send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <button id="chatbot-toggler"  onclick="toggleChatbot()">
+            <span class="material-symbols-outlined">smart_toy</span>
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    </div>
 	<footer id="footer" ><!--Footer-->
 		<div class="footer-top">
 			<div class="container" >
@@ -648,7 +696,7 @@
                     <h2 style="font-size: 18px; font-weight: bold; color: #333; margin-bottom: 16px;">Liên hệ</h2>
                     <ul class="nav nav-pills nav-stacked" style="list-style: none; padding: 0; line-height: 1.8;">
                         <li><a href="#" style="color: #555;"><i class="fa fa-phone"></i> Hotline: 0867677891</a></li>
-                        <li><a href="#" style="color: #555;"><i class="fa fa-envelope"></i> Email: contact@paddy.vn</a></li>
+                        <li><a href="#" style="color: #555;"><i class="fa fa-envelope"></i> Email: contact@furry.vn</a></li>
                     </ul>
                     </div>
                 </div>
@@ -729,11 +777,15 @@
 
 	</footer><!--/Footer-->
 
-<!--Start of Fchat.vn-->
-    <script type="text/javascript" src="https://cdn.fchat.vn/assets/embed/webchat.js?id=6804c4b40967f4a48e03bc27" async="async"></script>
-<!--End of Fchat.vn-->
 
+    <!--Start of Fchat.vn-->
+    <script type="text/javascript" src="https://cdn.fchat.vn/assets/embed/webchat.js?id=683abd6c910a1412100f1789" async="async"></script>
+    <!--End of Fchat.vn-->
+
+    <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
     <script src="{{asset('public/fontend/js/jquery.js')}}"></script>
+    <script src="{{asset('public/fontend/js/chatbot.js')}}"></script>
+    <script src="{{asset('public/fontend/js/script.js')}}"></script>
 	<script src="{{asset('public/fontend/js/bootstrap.min.js')}}"></script>
 	<script src="{{asset('public/fontend/js/jquery.scrollUp.min.js')}}"></script>
 	<script src="{{asset('public/fontend/js/price-range.js')}}"></script>

@@ -17,6 +17,54 @@ session_start();
 
 class HomeController extends Controller
 {
+    public function introduce(Request $request){
+        // seo meta
+        $meta_desc = "FurryFriend - Cửa hàng trực tuyến chuyên cung cấp đồ dùng, phụ kiện chất lượng cao cho thú cưng, giúp bạn chăm sóc và làm bạn đồng hành của mình hạnh phúc hơn mỗi ngày.";
+        $meta_keywords = "Cửa hàng trực tuyến chuyên cung cấp đồ dùng, phụ kiện chất lượng cao cho thú cưng";
+        $meta_title = "Trang chủ | FurryFriend";
+        $url_canonical = $request->url();
+        //end seo meta
+        $category_post = categoryPost::orderby('cate_post_id','desc')->where('cate_post_status','1')->get();
+        $slider = Slider::orderby('slider_id','desc')->where('slider_status','1')->take(4)->get();
+        $category_product = DB::table('tbl_category_product')->where('category_status','1')->orderby('category_parent','desc')->orderBy('category_order','asc')->get();
+
+        // $brand_product = DB::table('tbl_brand_product')->where('brand_status','1')->orderby('brand_id','desc')->get();
+        $brand_product = brandProduct::withCount('products')->where('brand_status', 1)
+                                                           ->orderby('brand_id','desc')
+                                                           ->get();
+        return view('pages.introduce.introduce')->with('meta_desc',$meta_desc)
+                                                    ->with('meta_keywords',$meta_keywords)
+                                                    ->with('meta_title',$meta_title)
+                                                    ->with('url_canonical',$url_canonical)
+                                                    ->with('category_post',$category_post)
+                                                    ->with('slider',$slider)
+                                                    ->with('category_product', $category_product)
+                                                    ->with('brand_product', $brand_product);
+    }
+    public function contact(Request $request){
+        // seo meta
+        $meta_desc = "FurryFriend - Cửa hàng trực tuyến chuyên cung cấp đồ dùng, phụ kiện chất lượng cao cho thú cưng, giúp bạn chăm sóc và làm bạn đồng hành của mình hạnh phúc hơn mỗi ngày.";
+        $meta_keywords = "Cửa hàng trực tuyến chuyên cung cấp đồ dùng, phụ kiện chất lượng cao cho thú cưng";
+        $meta_title = "Trang chủ | FurryFriend";
+        $url_canonical = $request->url();
+        //end seo meta
+        $category_post = categoryPost::orderby('cate_post_id','desc')->where('cate_post_status','1')->get();
+        $slider = Slider::orderby('slider_id','desc')->where('slider_status','1')->take(4)->get();
+        $category_product = DB::table('tbl_category_product')->where('category_status','1')->orderby('category_parent','desc')->orderBy('category_order','asc')->get();
+
+        // $brand_product = DB::table('tbl_brand_product')->where('brand_status','1')->orderby('brand_id','desc')->get();
+        $brand_product = brandProduct::withCount('products')->where('brand_status', 1)
+                                                           ->orderby('brand_id','desc')
+                                                           ->get();
+        return view('pages.introduce.contact')->with('meta_desc',$meta_desc)
+                                                    ->with('meta_keywords',$meta_keywords)
+                                                    ->with('meta_title',$meta_title)
+                                                    ->with('url_canonical',$url_canonical)
+                                                    ->with('category_post',$category_post)
+                                                    ->with('slider',$slider)
+                                                    ->with('category_product', $category_product)
+                                                    ->with('brand_product', $brand_product);
+    }
     public function index(Request $request ){
         $ip = request()->ip(); // lấy IP khách
         $today = Carbon::now('Asia/Ho_Chi_Minh')->toDateString();
@@ -166,4 +214,7 @@ class HomeController extends Controller
             echo $output;
         }
     }
+
+
+
 }
