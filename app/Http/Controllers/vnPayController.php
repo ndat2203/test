@@ -12,21 +12,22 @@ use App\Models\Customer;
 
 class vnPayController extends Controller
 {
-    public function vnpay_payment(){
+    public function vnpay_payment()
+    {
         error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
         date_default_timezone_set('Asia/Ho_Chi_Minh');
 
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
         $vnp_Returnurl = "http://localhost/DoAn/vnpay_return";
-        $vnp_TmnCode = "IS3BFJKA";//Mã website tại VNPAY
-        $vnp_HashSecret = "EOL7XDHX1OKHA1WBLMT71BFAJGB2YBTM"; //Chuỗi bí mật
+        $vnp_TmnCode = "5VWXMH0X";//Mã website tại VNPAY
+        $vnp_HashSecret = "DFHA73JXMOZ3WG7THBEQ3Z0QUGZOKHM1"; //Chuỗi bí mật
 
         $vnp_TxnRef = $_POST['order_id']; //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này sang VNPAY
         $vnp_OrderInfo = 'Thanh toán đơn hàng online';
         $vnp_OrderType = 'billpayment';
         $vnp_Amount = $_POST['amount'] * 100;
         $vnp_Locale = $_POST['language'];
-        $vnp_BankCode = $_POST['bank_code'];
+        $vnp_BankCode = "NCB";
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
         //Add Params of 2.0.1 Version
         $vnp_ExpireDate = $_POST['txtexpire'];
@@ -47,7 +48,7 @@ class vnPayController extends Controller
             "vnp_OrderType" => $vnp_OrderType,
             "vnp_ReturnUrl" => $vnp_Returnurl,
             "vnp_TxnRef" => $vnp_TxnRef,
-            "vnp_ExpireDate"=>$vnp_ExpireDate,
+            "vnp_ExpireDate" => $vnp_ExpireDate,
 
         );
 
@@ -75,24 +76,28 @@ class vnPayController extends Controller
 
         $vnp_Url = $vnp_Url . "?" . $query;
         if (isset($vnp_HashSecret)) {
-            $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret);//
+            $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);//
             $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
         }
-        $returnData = array('code' => '00'
-            , 'message' => 'success'
-            , 'data' => $vnp_Url);
-            if (isset($_POST['redirect'])) {
-                header('Location: ' . $vnp_Url);
-                die();
-            } else {
-                echo json_encode($returnData);
-            }
-            // vui lòng tham khảo thêm tại code demo
+        $returnData = array(
+            'code' => '00'
+            ,
+            'message' => 'success'
+            ,
+            'data' => $vnp_Url
+        );
+        if (isset($_POST['redirect'])) {
+            header('Location: ' . $vnp_Url);
+            die();
+        } else {
+            echo json_encode($returnData);
+        }
+        // vui lòng tham khảo thêm tại code demo
 
     }
     public function vnpay_return(Request $request)
     {
-        $vnp_HashSecret = "EOL7XDHX1OKHA1WBLMT71BFAJGB2YBTM"; // Chuỗi bí mật
+        $vnp_HashSecret = "DFHA73JXMOZ3WG7THBEQ3Z0QUGZOKHM1"; // Chuỗi bí mật
 
         // Lấy dữ liệu từ VNPAY trả về
         $inputData = $request->all();
